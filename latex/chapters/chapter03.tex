@@ -1,0 +1,24 @@
+\chapter{Theoretical Foundations and Conceptual Model}\label{chap:theory}
+\section{Introduction}
+This chapter outlines theoretical constructs underpinning the framework, integrating cybersecurity models, telemetry taxonomies, AI paradigms, explainability principles, and compliance considerations.
+
+\section{Cyber Kill Chain and MITRE ATT\&CK}
+The Lockheed Martin Cyber Kill Chain and MITRE ATT\&CK matrix provide structured representations of adversarial behavior~\cite{hutchins2011killchain,mitreattack2023}. Aligning telemetry with ATT\&CK techniques enables systematic coverage of multi-stage attacks and justifies attack graph reasoning.
+
+\section{Telemetry Taxonomy}
+Telemetry is categorized by source, format, velocity, and sensitivity~\cite{opentelemetry2023}. This taxonomy informs schema normalization, storage policies, and sensitivity-aware processing within the data fabric.
+
+\section{AI and Analytics Foundations}
+Graph theory models entities and relationships, powering graph neural networks. Temporal modeling via transformer architectures captures event sequences, while Bayesian belief networks provide probabilistic reasoning. Complex event processing (CEP) aggregates low-level events into higher-order signals.
+
+\section{Explainability and Human-Centered AI}
+Explainable AI principles from DARPA and the EU AI Act emphasize transparency, interpretability, and trust~\cite{darpa2020xai,nis22022}. Techniques such as SHAP, integrated gradients, and counterfactual explanations enrich analyst understanding~\cite{lundberg2017shap,ribeiro2016lime}. User-centered design mandates interactive dashboards and feedback loops.
+
+\section{Compliance and Governance}
+Policy-as-code, audit trails, and risk management frameworks (NIST RMF, ISO~27001) inform the governance layer~\cite{openpolicyagent2023,nist80053rev5}. Detection outputs must be traceable for auditors and regulators.
+
+\section{Conceptual Architecture}
+The conceptual model layers telemetry ingestion, data fabric, AI analytics, explainability and response, and governance. Feedback loops connect layers to support adaptive learning and compliance enforcement. Figure~\ref{fig:concept} (placeholder) illustrates this architecture.
+
+\section{Hypotheses}
+The theoretical constructs operationalize hypotheses H1--H4 by linking architectural components to expected improvements in detection accuracy, latency, analyst trust, and compliance adherence.

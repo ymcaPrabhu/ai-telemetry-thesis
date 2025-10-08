@@ -1,0 +1,30 @@
+\chapter{Literature Review}\label{chap:lit}
+\section{Overview}
+This chapter synthesizes scholarship on cloud security architectures, telemetry sources, AI-driven intrusion detection, multi-telemetry fusion, big data platforms, regulatory frameworks, and emerging research directions. The review follows the PRISMA methodology described in the literature review plan.
+
+\section{Cloud Security Architecture}
+Cloud security research differentiates between Infrastructure-as-a-Service (IaaS), Platform-as-a-Service (PaaS), and Software-as-a-Service (SaaS) threat models. Foundational work enumerates risks such as misconfiguration, privilege escalation, and lateral movement in virtualized environments~\cite{hashizume2013analysis}. Zero-trust paradigms tailored to cloud-native workloads introduce telemetry fragmentation, complicating detection strategies~\cite{nist800207}.
+
+\section{Telemetry Sources and Observability}
+Telemetry spans network flows, identity logs, application traces, container and Kubernetes events, serverless execution records, and SaaS audit trails~\cite{awscloudtrail2023,opentelemetry2023}. Observability literature underscores the need for comprehensive, multi-layer visibility while acknowledging challenges in harmonizing provider-specific formats.
+
+\section{AI and Machine Learning for Intrusion Detection}
+Intrusion detection evolved from signature and anomaly-based systems to deep learning approaches including LSTM, CNN, GAN, and graph neural networks~\cite{chandola2009anomaly,zhang2022ids,wu2021gnnreview}. Studies reveal trade-offs between accuracy and explainability, and highlight the paucity of cloud-specific benchmarks. Explainable AI (XAI) techniques such as SHAP and LIME offer interpretable outputs yet require validation of analyst trust~\cite{lundberg2017shap,ribeiro2016lime}.
+
+\section{Multi-Telemetry Fusion Techniques}
+SIEM and XDR solutions attempt to fuse multi-source telemetry but often rely on rule-based correlation. Academic proposals include complex event processing (CEP) for attack graph reconstruction, Bayesian alert aggregation, and knowledge graphs for entity relationships~\cite{albanese2017cep,mitrethreatgraph2023}. Industrial platforms advocate for unified data fabrics yet divulge few details on proprietary AI models.
+
+\section{Big Data and Stream Processing Frameworks}
+Scalable telemetry processing leverages Kafka, Flink, Spark, and cloud-native services such as Kinesis and Event Hub~\cite{zaharia2016apache,balaji2021flink}. Research on ML systems optimized for streaming and large-scale inference informs architecture decisions in this thesis~\cite{palkar2018weld}.
+
+\section{Benchmark Case Studies}
+Top-tier laboratories---MIT CSAIL, Oxford Cybersecurity Centre, Carnegie Mellon CyLab, Stanford AI Security Lab, and Imperial College London---demonstrate interdisciplinary approaches combining technical, policy, and human-factor perspectives~\cite{mitcsail2023,oxfordcyber2022,cylab2021}. Their methodologies inform the integration of compliance and usability into the framework.
+
+\section{Regulatory and Compliance Standards}
+Regulations including GDPR, HIPAA, PCI DSS, EU NIS2, US FedRAMP, CERT-In directives, and MeitY cloud guidelines impose stringent requirements on logging, breach notification, and data governance~\cite{gdpr2016,hipaa2013,nis22022,fedramp2023,certin2022directive,meity2017cloud}. Few studies comprehensively map detection outputs to compliance obligations, revealing an important research gap.
+
+\section{Research Gap Analysis}
+A gap matrix (Appendix~\ref{app:matrix}) highlights under-explored intersections such as serverless telemetry with explainable AI, multi-cloud attack graphs, fairness evaluation, and compliance-integrated automation. Existing research often treats telemetry, AI modeling, and policy in isolation.
+
+\section{Conceptual Framework Summary}
+The literature supports a layered conceptual model comprising telemetry ingestion, data fabric, AI analytics, explainability, and governance. This model anchors the framework developed in subsequent chapters.

@@ -1,0 +1,12 @@
+\chapter{Experimental Scenario Library}\label{app:matrix}
+\begin{longtable}{p{3cm}p{4cm}p{7cm}}
+\toprule
+Scenario & ATT\&CK Tactics & Description \\
+\midrule
+S1: Credential Access & Initial Access, Credential Access, Persistence & Compromised IAM user via phishing with privilege escalation captured through CloudTrail and Azure AD logs. \\
+S2: Kubernetes Lateral Movement & Discovery, Lateral Movement, Execution & Pod compromise and API exploitation observed via Kubernetes audit logs and container runtime telemetry. \\
+S3: Serverless Exfiltration & Collection, Exfiltration & Malicious function exfiltrates data; anomalies surfaced in CloudWatch Logs and API Gateway traces. \\
+S4: Crypto Mining & Execution, Impact & Unauthorized mining workload deployed through CI/CD pipeline; detection via runtime metrics and network telemetry. \\
+S5: SaaS Supply Chain & Initial Access, Command and Control & OAuth token theft from third-party SaaS with identity telemetry correlation. \\
+\bottomrule
+\end{longtable}

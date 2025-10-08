@@ -1,0 +1,48 @@
+\chapter{Introduction}\label{chap:intro}
+\section{Background and Motivation}
+Cloud adoption has redefined the way modern enterprises architect, deploy, and operate mission-critical systems. Elastic infrastructure, managed services, and distributed workloads enable unprecedented agility, but also expand the cyber-attack surface~\cite{hashizume2013analysis}. Cloud-native environments produce massive telemetry streams---network flow logs, identity trails, container runtime events, serverless execution records, and SaaS audit data---that hold latent signals about malicious activity. Traditional intrusion detection systems (IDS) and security information and event management (SIEM) platforms often struggle to ingest, correlate, and interpret such heterogeneous data in real time, yielding detection blind spots, delayed response, and limited analyst trust~\cite{chandola2009anomaly,wu2021gnnreview}.
+
+Regulatory expectations continue to escalate. India's CERT-In directives mandate six-hour incident reporting and 180-day log retention, while global frameworks such as GDPR, EU NIS2, and US FedRAMP impose strict accountability for data breaches~\cite{certin2022directive,gdpr2016,nis22022,fedramp2023}. Organizations require detection and response capabilities that surface complex attack paths while complying with multifaceted governance requirements. Advances in artificial intelligence (AI) and machine learning (ML) enable automated reasoning over complex telemetry, yet integrating these techniques into operationally viable, policy-aware workflows remains an open challenge~\cite{nist800207,lundberg2017shap}.
+
+\section{Problem Statement}
+Existing cloud security tooling fails to deliver comprehensive, explainable, and compliance-aligned detection across multi-telemetry sources. The core research problem is: \emph{How can we design an AI-driven framework that fuses heterogeneous cloud telemetry to detect and explain multi-stage cyber attacks in real time while satisfying regulatory obligations?}
+
+\section{Research Objectives}
+\begin{enumerate}[label=\textbf{O\arabic*}]
+    \item Develop a modular, scalable architecture capable of ingesting and correlating telemetry from IaaS, PaaS, SaaS, container, and serverless environments.
+    \item Build hybrid AI models that combine graph-based reasoning, temporal analysis, and probabilistic inference to detect complex attack patterns with high accuracy and low latency.
+    \item Evaluate the framework against benchmark datasets, simulated attack scenarios, and analyst feedback to confirm improvements in precision, recall, latency, and analyst trust.
+    \item Map the framework's operations to national and international cybersecurity policies and propose an adoption roadmap for enterprises and government agencies.
+\end{enumerate}
+
+\section{Research Questions and Hypotheses}
+\begin{itemize}
+    \item \textbf{RQ1:} How can multi-modal telemetry be normalized into a unified representation that supports real-time correlation?
+    \item \textbf{RQ2:} Which AI/ML techniques best capture cloud attack behaviors without sacrificing explainability?
+    \item \textbf{RQ3:} What improvements in detection accuracy, latency, and false-positive reduction does the proposed framework deliver compared with state-of-the-art solutions?
+    \item \textbf{RQ4:} How can detection outcomes be aligned with regulatory mandates across jurisdictions without degrading efficacy?
+\end{itemize}
+Hypotheses H1--H4 postulate that hybrid AI ensembles, multi-telemetry fusion, explainability modules, and compliance-aware orchestration can collectively drive measurable performance gains while satisfying regulatory requirements.
+
+\section{Scope and Delimitations}
+The study focuses on cloud-native infrastructures spanning AWS, Azure, and Google Cloud, with extensions to containerized and serverless workloads. Telemetry includes network, host, identity, application, and SaaS sources. On-premises systems are considered only for necessary hybrid integration. The research delivers a validated framework and reference implementation rather than a production product. Ethical compliance is scoped to major jurisdictions relevant to Indian enterprises operating globally. Human subject involvement is limited to analyst usability studies under institutional ethics approval.
+
+\section{Significance and Contributions}
+Academically, the thesis extends multi-telemetry fusion theory, demonstrates hybrid AI efficacy, and provides reproducible artifacts. Industrial stakeholders benefit from an operational blueprint integrating detection, explainability, and compliance. Policy makers gain evidence-based recommendations for enhancing national cyber defense capacities. Societal impact arises from strengthened cloud security postures, reduced breach exposure, and promotion of responsible AI practices.
+
+\section{Research Dissemination Plan}
+Findings will be disseminated through leading security conferences, journals, practitioner workshops, and policy briefings. Artifacts---datasets, code, documentation---will be released under permissive licenses, and patent or technology transfer opportunities will be explored with the institutional IP cell.
+
+\section{Thesis Organization}
+\begin{itemize}
+    \item Chapter~\ref{chap:lit} reviews literature on cloud security telemetry, AI-based detection, and compliance frameworks.
+    \item Chapter~\ref{chap:theory} presents theoretical foundations and the conceptual architecture.
+    \item Chapter~\ref{chap:method} details research methodology, data governance, and experimental setup.
+    \item Chapter~\ref{chap:arch} describes system architecture and implementation.
+    \item Chapter~\ref{chap:eval} reports experimental results and analyses.
+    \item Chapter~\ref{chap:policy} maps findings to policy and governance implications.
+    \item Chapter~\ref{chap:conclusion} concludes with contributions, limitations, and future work.
+\end{itemize}
+
+\section{Compliance and Ethics}
+All research activities comply with ethics approvals, plagiarism thresholds, cloud provider terms, NDAs, and responsible AI guidelines.

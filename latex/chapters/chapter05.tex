@@ -1,0 +1,27 @@
+\chapter{System Architecture and Implementation}\label{chap:arch}
+\section{Overview}
+The architecture is organized into telemetry ingestion, data fabric, AI analytics, explainability and response, and governance layers. Each layer encapsulates specific services, interfaces, and controls.
+
+\section{Telemetry Ingestion}
+Connectors based on Fluent Bit, AWS Kinesis Agent, Azure Event Hub exporters, and Google Pub/Sub collectors gather telemetry. A schema registry enforces JSON schemas and versioning. Kafka buffers events with TLS encryption and fine-grained IAM permissions.
+
+\section{Data Fabric}
+A lakehouse built on Delta Lake/Hudi stores telemetry with partitioning by time and source. Apache Spark and Flink handle ETL and streaming analytics. Metadata catalogs (AWS Glue, Apache Atlas) track lineage, sensitivity, and retention policies. Data quality is monitored via Great Expectations.
+
+\section{AI Analytics}
+Feature stores supply training data to hybrid models comprising GNN, transformer-based temporal analyzers, and Bayesian inference modules. Ray Serve deploys ensembles; Alibi Detect monitors drift and triggers retraining workflows.
+
+\section{MLOps and DevSecOps}
+GitHub Actions orchestrate CI/CD for infrastructure and application code. MLflow tracks experiments and model lifecycles. Security scans (Bandit, Trivy) run in the pipeline, and audit logs record model promotions.
+
+\section{Explainability and Response}
+Explainability services deliver SHAP values, counterfactuals, and narratives via analyst dashboards. StackStorm playbooks trigger automated containment actions and integrate with SOAR platforms. Analyst feedback loops capture dispositions for continuous learning.
+
+\section{Security and Privacy Controls}
+Encryption at rest and in transit is enforced through KMS and Key Vault solutions. Role-based and attribute-based access control with just-in-time privileges supports zero-trust principles. Service mesh features (mTLS) secure microservice communication.
+
+\section{Performance Optimization}
+Autoscaling policies adjust resources based on queue depth and CPU utilization. FinOps monitoring tracks cost versus performance trade-offs.
+
+\section{Implementation Challenges}
+Telemetry diversity, real-time constraints, explainability complexity, and compliance mandates were addressed via normalization pipelines, optimized streaming, XAI services, and policy engines respectively.

@@ -1,0 +1,27 @@
+\chapter{Research Methodology}\label{chap:method}
+\section{Research Design}
+The study employs a mixed-methods approach combining design science research with experimental evaluation. The process follows Peffers et~al.'s framework encompassing problem identification, objective definition, artifact development, demonstration, evaluation, and communication.
+
+\section{Data Collection}
+Data sources include synthetic intrusion datasets (CIC-IDS~2017, UNSW-NB15, DARPA OpTC), cloud telemetry from sandboxed AWS, Azure, and Google Cloud environments, adversary emulation outputs (MITRE Caldera, Atomic Red Team, Stratus Red Team), and analyst feedback gathered through surveys and interviews.
+
+\section{Governance and Ethics}
+Institutional ethics approval governs data handling, attack simulations, and human studies. Telemetry containing sensitive identifiers is anonymized. Storage adheres to the Data Management Plan with encryption, access logging, and retention policies. Breach response follows CERT-In directives.
+
+\section{AI Model Development}
+The pipeline encompasses ingestion and preprocessing, feature engineering, model training (baseline models and hybrid ensemble), and model serving via containerized deployments with MLOps automation.
+
+\section{Correlation Engine}
+A CEP engine ingests normalized telemetry, constructs attack graphs, and feeds aggregated events to AI models. Graph databases maintain entity relationships, while streaming frameworks provide real-time processing.
+
+\section{Experimental Setup}
+Infrastructure spans hybrid cloud labs with Kubernetes clusters, serverless platforms, and GPU instances. Tooling includes Docker, Terraform, GitHub Actions, and MLflow. Attack scenarios S1--S5 exercise credential abuse, lateral movement, serverless exfiltration, crypto mining, and SaaS supply-chain compromise.
+
+\section{Validation Strategy}
+Quantitative validation employs k-fold cross-validation, hold-out testing, ablation studies, and statistical significance tests. Qualitative validation uses System Usability Scale surveys, NASA~TLX, and think-aloud protocols. Reproducibility is supported via experiment registries and OSF preregistration.
+
+\section{Reliability and Validity}
+Reliability is ensured through automated pipelines and version control. Internal validity stems from controlled environments, external validity from multi-cloud diversity, and construct validity from metrics aligned to research objectives.
+
+\section{Ethical Risk and Limitations}
+Potential risks include accidental exposure of sensitive telemetry, misuse of attack scripts, and participant privacy breaches. Mitigation measures include confidentiality agreements, environment segregation, and informed consent. Limitations involve access to real-world incidents, dataset bias, and resource constraints.
