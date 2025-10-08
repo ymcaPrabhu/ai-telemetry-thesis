@@ -1,0 +1,265 @@
+====================
+MASTER PROMPT
+====================
+System Role:
+You are an expert academic writing assistant and research planner tasked with producing PhD-level LaTeX chapters for the thesis "AI-Driven Multi-Telemetry Framework for Cyber Attack Detection in Cloud Environments." Write with a formal scholarly tone, comply with UGC 2016 formatting norms, and respect international research integrity standards.
+
+Global Context:
+- Thesis purpose: deliver an AI-enabled, compliance-aware multi-telemetry detection framework for cloud environments.
+- Target readers: doctoral committee members, cybersecurity practitioners, and policy stakeholders.
+- Thesis structure and planned scope: see appended thesis outline and progress log; align content with those milestones.
+- Research basis: design science methodology, experiments on heterogeneous cloud telemetry, emphasis on regulatory compliance (CERT-In, GDPR, NIS2, FedRAMP), explainable AI, and governance automation.
+
+Task Parameters (fill before each run):
+1. Chapter Number & Title: {{chapter_number}} – {{chapter_title}}
+2. Objectives: {{chapter_objectives}} (list primary aims, hypotheses, questions).
+3. Required Sections: {{section_outline}} (hierarchical list with desired word counts per section/subsection; aim ≥5,000 words total unless stated otherwise).
+4. Sources & Citations:
+   - Mandatory references (with citation keys): {{citation_keys}}
+   - Additional evidence: pull from knowledge base and latest web search (provide live references with author, year, venue).
+5. Style & Formatting:
+   - Return LaTeX only with proper \chapter, \section, \subsection hierarchy.
+   - Use \cite{} with provided BibTeX keys; flag any new sources needing BibTeX entries.
+   - Add figure/table placeholders with descriptive captions where analysis benefits from visuals.
+   - Insert cross-references (\label{} / \ref{}) for concepts tied to previous chapters (e.g., conceptual model, methodology).
+   - Integrate enumerated lists, theorems, definitions, and algorithms where academically appropriate.
+
+Quality & Integrity Checklist (perform before final output):
+- Coverage: Each section meets target depth (≥3 paragraphs) and ties back to thesis objectives.
+- Evidence density: Every substantive claim linked to a citation or experimental result.
+- Critical analysis: Include comparative evaluation, limitations, and implications.
+- Compliance markers: Reference relevant standards/policies (CERT-In, UGC, etc.) where context demands.
+- Transitions: Ensure smooth narrative flow and explicit links between sections.
+- Action items: Highlight any required artefacts (figures, datasets, experiments) the researcher must supply.
+
+Output Format:
+- Produce the complete LaTeX chapter text.
+- Conclude with a bullet list titled "Editorial Notes" summarising any unmet assumptions, missing data, or follow-up tasks for the researcher.
+
+If input info is insufficient, pause and request the missing details before drafting.
+
+====================
+THESIS OUTLINE (Reference)
+====================
+# Thesis Outline: AI-Driven Multi-Telemetry Framework for Cyber Attack Detection in Cloud Environments
+
+## Compliance Summary
+- **Global Standards:** IEEE/ACM scholarly structure, ISO/IEC 27000-series alignment, NIST SP 800-53/207 considerations, CSA CCM v4 crosswalk, APA/Chicago/IEEE referencing flexibility.
+- **Benchmark Universities:** Incorporate formatting cues from MIT Libraries thesis specs (title page metadata, 1.5 line spacing, ProQuest-ready PDF/A), Stanford GSB research quality rubric (contribution clarity, replicability appendix), Carnegie Mellon SCS artifact evaluation, and Oxford Cybersecurity Centre ethics protocols.
+- **Indian Requirements:** UGC 2016 (Minimum Standards and Procedure), IIT research formatting norms (A4, margins, font), Shodhganga/Shodh Shuddhi plagiarism limits (<10%), Government of India cybersecurity directives (CERT-In, MeitY cloud guidelines), AICTE cybersecurity curriculum outcomes for contextual framing.
+- **Institutional Adaptation:** Insert university-specific templates for front matter, declarations, and ethics statements; align with DeLCON/INFLIBNET metadata fields; ensure ORCID integration per new UGC guidelines.
+
+## Front Matter
+1. Title Page (UGC-compliant, ISBN-ready, institutional logos permissible).
+2. Certificate of Originality (Supervisor + Head of Department signatures).
+3. Declaration by Research Scholar (IAST standard text, plagiarism undertakings).
+4. Approval Sheet (Departmental Research Committee clearance).
+5. Abstract (≤500 words; keywords ≤6; double submission in English/Hindi as per UGC).
+6. Acknowledgements (optional, succinct).
+7. Dedication (optional).
+8. Table of Contents (auto-generated with chapter and section hierarchy).
+9. List of Figures (IEEE numbering format).
+10. List of Tables.
+11. List of Algorithms/Boxes.
+12. List of Abbreviations and Symbols (ISO 31, NIST notation compliance).
+13. Glossary of Key Terms (cloud, telemetry, AI/ML acronyms).
+14. Preface / Executive Summary (optional; encouraged by ETH Zurich & NUS for industry-facing theses).
+
+## Chapter 1: Introduction
+1.1 Background and Motivation (global cyber threat landscape, cloud adoption).
+1.2 Problem Statement (gaps in multi-source telemetry correlation, real-time detection challenges).
+1.3 Research Objectives (primary, secondary, validation objectives).
+1.4 Research Questions & Hypotheses.
+1.5 Scope and Delimitations (cloud service models, telemetry sources).
+1.6 Significance and Contributions (academic, industrial, policy, societal impact statement per Stanford Doerr guidelines).
+1.7 Research Dissemination Plan (conferences, journals, patent prospects).
+1.8 Thesis Organization Overview.
+1.9 Compliance Footnote (ethical approval, data protection adherence, IRB/IEC reference numbers).
+
+## Chapter 2: Literature Review
+2.1 Cloud Security Architecture (IaaS, PaaS, SaaS threat models).
+2.2 Telemetry Sources (network, host, application, identity, container, serverless telemetry).
+2.3 AI/ML in Intrusion Detection (supervised, unsupervised, federated, reinforcement).
+2.4 Multi-Telemetry Fusion Techniques (SIEM, SOAR, XDR comparison).
+2.5 Big Data & Stream Processing Frameworks (Kafka, Flink, Spark).
+2.6 Benchmark Case Studies from Leading Labs (MIT CSAIL, Oxford Cybersecurity, Imperial College London).
+2.7 Regulatory and Compliance Standards (GDPR, HIPAA, भारतीय IT नियम 2021, EU NIS2, US FedRAMP).
+2.8 Research Gap Analysis (tabular mapping to objectives with TRL assessment).
+2.9 Summary and Conceptual Framework.
+
+## Chapter 3: Theoretical Foundations & Conceptual Model
+3.1 Cyber Kill Chain and MITRE ATT&CK Mapping.
+3.2 Telemetry Taxonomy (source, format, velocity, sensitivity).
+3.3 AI Framework Selection (model families, explainability needs under UGC guidelines for ethical AI).
+3.4 Proposed Conceptual Model (multi-layer architecture diagrams).
+3.5 Hypothesized Mechanisms (tensor flow, Bayesian inference, ensemble logic).
+3.6 Evaluation Metrics Definition (precision, recall, ROC, MTTR).
+
+## Chapter 4: Research Methodology
+4.1 Research Design (mixed-methods: design science + experimental).
+4.2 Data Collection Plan
+- Synthetic datasets (CIC-IDS, UNSW-NB15, custom cloud telemetry).
+- Real-world logs (subject to NDA, ethical clearance).
+4.3 Data Governance & Ethics (MeitY MDR, UGC ethics forms, anonymization techniques).
+4.4 AI Model Development Pipeline (data preprocessing, feature engineering, model training, validation, autoML considerations).
+4.5 Multi-Telemetry Correlation Engine Design (graph databases, CEP rules).
+4.6 Experimental Setup
+- Cloud environment (AWS/Azure/GCP, IIT HPC resources, benchmarked against MIT Lincoln Lab LLGrid practices).
+- Simulation of attack vectors (red team scripts, MITRE Caldera, DARPA OpTC traces).
+4.7 Validation Strategy (statistical tests, ablation studies, threat emulation labs, CMU CyLab reproducibility checklist).
+4.8 Reliability and Validity (Cronbach's alpha for survey instruments, k-fold cross-validation, inter-rater reliability for analyst studies).
+4.9 Ethical Risk Assessment (privacy impact, bias audits).
+4.10 Limitations and Risk Mitigation.
+
+## Chapter 5: System Architecture and Implementation
+5.1 Reference Architecture Overview (diagrammatic representation per IEEE 1471).
+5.2 Telemetry Ingestion Layer (agents, APIs, message brokers).
+5.3 Data Lake and Processing Layer (schema-on-read, security controls).
+5.4 AI Analytics Layer (model deployment, drift detection, explainable AI module).
+5.5 MLOps and DevSecOps Governance (CI/CD for models, continuous monitoring, documentation per Google/Microsoft Responsible AI toolkits).
+5.6 Response and Orchestration Layer (automation workflows, integration with SOAR).
+5.7 Security and Privacy Controls (encryption, RBAC/ABAC, compliance with CERT-In guidelines, zero-trust alignment).
+5.8 Performance Optimization (scalability, resiliency, cost governance with FinOps benchmarks).
+5.9 Implementation Challenges and Resolutions (lessons learned log referencing Stanford CRFM practices).
+
+## Chapter 6: Experimental Evaluation & Results
+6.1 Dataset Description and Preprocessing Outcomes.
+6.2 Baseline Models vs. Proposed Framework Comparison.
+6.3 Detection Accuracy and False Positive Analysis.
+6.4 Latency and Throughput Metrics (streaming performance).
+6.5 Case Studies (multi-stage attack detection scenarios).
+6.6 Explainability and Analyst Feedback (XAI visualizations, survey outcomes aligned with DARPA XAI evaluation rubric).
+6.7 Security Posture Improvement (MTTD/MTTR reduction metrics, MITRE ATT&CK coverage heatmaps).
+6.8 Fairness and Bias Analysis (differential performance across tenants, workloads).
+6.9 Discussion of Findings (link to hypotheses, prior work, translational potential).
+
+## Chapter 7: Policy, Governance, and Compliance Implications
+7.1 Alignment with Indian Cybersecurity Policies (National Cyber Security Strategy, CERT-In directives).
+7.2 Cloud Service Provider Compliance Mapping (ISO 27017/27018, RBI cloud guidelines).
+7.3 Ethical AI Considerations (bias, transparency, accountability frameworks).
+7.4 Operationalization Roadmap for Enterprises (people, process, technology, training; aligned with NIST NICE workforce roles).
+7.5 Cross-Jurisdictional Compliance (US, EU, ASEAN) for multinational cloud adoption.
+7.6 Cost-Benefit and ROI Analysis.
+7.7 Sustainability and Green Computing Considerations (carbon-aware scheduling, referencing MIT CSAIL/Google carbon research).
+
+## Chapter 8: Conclusion and Future Work
+8.1 Summary of Contributions.
+8.2 Theoretical Implications.
+8.3 Practical Implications.
+8.4 Limitations.
+8.5 Future Research Directions (edge computing telemetry, quantum-safe detection).
+
+## Back Matter
+- References (IEEE/APA style; Shodhganga plagiarism compliance, DOIs mandatory; integrate Zotero/LaTeX biblatex).
+- Appendices (detailed algorithms, datasets schemas, policy crosswalks, reproducibility package index).
+- Publications and Patents derived from the thesis.
+- Ethics Approval Documents.
+- Plagiarism Report Certificate (<10% similarity, Turnitin/URKUND receipts).
+- Artifact Availability Statement (code/data per ACM badge, MIT Sloan reproducibility).
+- ORCID and Author Contribution Statement (per Nature journals & IIT directives).
+
+## Supplementary Plans
+- Submission-ready formats: DOC (for university), PDF/A (UGC/INFLIBNET & MIT Libraries), LaTeX template (IIT grade), PLUS Open Research Europe-ready template.
+- Data Management Plan aligning with UGC data sharing policy, FAIR principles, and MIT/Stanford reproducibility expectations (code notebooks, container images).
+- Timeline integration with research progress seminars (pre-synopsis, synopsis, defense) and milestone gates from Oxford CDT cybersecurity programs.
+- Security classification handling for sensitive telemetry per govt guidelines, including confidential appendix protocols used by NUS & ETH Zurich.
+- Outreach plan for presenting findings at flagship venues (IEEE S&P, USENIX Security, NDSS) and policy briefings (CERT-In, MeitY).
+
+====================
+TODO STATUS (Reference)
+====================
+# AI-Driven Multi-Telemetry Thesis TODO
+
+## 1. Governance & Compliance Setup
+- [x] Map institutional thesis format (UGC + University + IIT style) incorporating MIT/Stanford formatting specs (PDF/A, margins, sectioning) and update templates.
+- [x] Obtain ethics clearance (IRB/IEC) and data sharing approvals; align consent forms with Oxford/NUS cybersecurity research ethics.
+- [x] Draft plagiarism and originality management plan (Turnitin/URKUND schedule, version control) ensuring <10% similarity and Shodh Shuddhi uploads.
+- [x] Compile applicable regulations: UGC 2016, MeitY cloud guidelines, CERT-In directives, GDPR/HIPAA, EU NIS2, US FedRAMP, CSA CCM, RBI cloud circulars.
+- [x] Create security classification protocol for telemetry datasets (confidential appendices, access logs) referencing CMU CyLab practices.
+- [x] Register ORCID, AuthorID, and link to university repository metadata.
+
+## 2. Research Design & Planning
+- [x] Finalize research problem statement and hypotheses (align with Stanford GSB impact rubric).
+- [x] Develop conceptual framework diagrams (IEEE 1471 + MIT CSAIL architecture annotation).
+- [x] Define research questions mapped to objectives, expected contributions, and Technology Readiness Levels.
+- [x] Prepare detailed Gantt timeline (proposal, milestones, submission) incorporating Oxford CDT checkpoint reviews.
+- [x] Identify funding, lab resources, and cloud credits (AWS/GCP/Azure research programs, IIT HPC, DARPA/NIST datasets).
+- [x] Draft Data Management Plan (FAIR, DOI minting, containerization) per MIT Libraries & UKRI templates.
+
+## 3. Literature & Background Study
+- [x] Conduct systematic literature review (IEEE Xplore, ACM, Scopus, Web of Science, arXiv, Shodhganga) using PRISMA flow.
+- [x] Build annotated bibliography (Zotero/Mendeley) with IEEE + APA styles; sync with Overleaf.
+- [x] Summarize regulatory and policy documents affecting cloud telemetry (CERT-In, MeitY, ENISA, NIST, CSA).
+- [x] Create comparative matrix of existing AI-based IDS/XDR solutions, including benchmarking from MIT Lincoln Lab datasets and Stanford/UC Berkeley publications.
+- [x] Document research gaps aligned with objectives and categorize by TRL/maturity.
+- [x] Review interdisciplinary perspectives (socio-technical, legal, ethics) from Oxford Internet Institute and Harvard Berkman Klein Center.
+
+## 4. Data & Telemetry Preparation
+- [x] Inventory telemetry sources (network, host, application, identity, container, serverless, SaaS audit logs).
+- [x] Secure access to public datasets (CIC-IDS, UNSW-NB15, Azure/AWS logs, DARPA OpTC, Stratosphere IPS, CloudTrail samples).
+- [x] Draft data governance plan (anonymization, encryption, retention) referencing NIST Privacy Framework & Stanford privacy guidelines.
+- [x] Design data ingestion pipelines (agents, APIs) for synthetic/real logs; include benchmarking pipeline from CMU C3i honeypot datasets.
+- [x] Validate data quality and label accuracy (data profiling, SME review, inter-annotator agreement).
+- [x] Implement secure storage with key management and audit trails.
+
+## 5. Methodology & Experimentation
+- [x] Specify AI/ML models (baseline and proposed ensembles; include explainable and neuro-symbolic options).
+- [x] Establish feature engineering workflows per telemetry type; document reproducibility per ACM artifact guidelines.
+- [x] Configure cloud lab/testbed (IaaS + serverless + container workloads; compare with MITRE ATT&CK Center test ranges).
+- [x] Script attack scenarios aligned with MITRE ATT&CK, Cyber Kill Chain, and red-team playbooks used by Oxford CDT.
+- [x] Implement multi-telemetry correlation engine prototype (CEP + graph analytics).
+- [x] Set evaluation metrics (precision, recall, latency, MTTR, FPR, coverage breadth).
+- [x] Plan statistical validation (k-fold, ablation, hypothesis testing, bootstrap CI, power analysis).
+- [x] Register experiment protocol (Open Science Framework) to enhance transparency.
+
+## 6. System Development
+- [x] Build ingestion layer (Kafka/Fluentd/Beats, Kinesis/PubSub) with schema registry.
+- [x] Implement data lake/storage (S3/GCS/Azure Data Lake) with IAM controls, encryption, retention policies.
+- [x] Deploy analytics layer (Spark/Flink, ML serving endpoints, Ray for distributed training).
+- [x] Integrate explainable AI module (SHAP/LIME dashboards, counterfactuals) following DARPA XAI user studies.
+- [x] Develop response orchestration (SOAR playbooks, automation scripts, Slack/Teams integration).
+- [x] Establish MLOps pipeline (CI/CD, model registry, drift detection) referencing Google Responsible AI guidelines.
+- [x] Conduct performance tuning and cost optimization (FinOps KPIs, autoscaling policies).
+- [x] Document architecture and code for artifact release (Docker/Helm charts).
+
+## 7. Evaluation & Analysis
+- [x] Run baseline experiments and collect metrics (store in reproducible notebooks).
+- [x] Execute proposed framework and compare results across benchmarks.
+- [x] Analyze false positives/negatives, detection coverage, MITRE ATT&CK matrix heatmaps.
+- [x] Perform fairness/bias analysis across tenants, workloads, and telemetry mixes.
+- [x] Gather qualitative feedback from security analysts (think-aloud sessions, SUS/USE surveys).
+- [x] Document case studies demonstrating multi-stage attack detection and automated response efficacy.
+- [x] Synthesize findings vs. hypotheses and research questions; prepare cross-site benchmarking summary (Stanford vs. MIT datasets if available).
+- [x] Archive experiment artifacts in OSF/Git for replication.
+
+## 8. Policy & Compliance Assessment
+- [x] Map framework outcomes to national cybersecurity strategies (India, US, EU, ASEAN).
+- [x] Assess compliance with cloud provider standards (ISO 27017/18, SOC 2, CSA CCM v4, PCI DSS for financial workloads).
+- [x] Evaluate ethical AI considerations (bias, transparency, accountability) using frameworks from MIT Schwarzman College & EU AI Act.
+- [x] Formulate operational adoption roadmap for industry/govt aligned with NIST NICE workforce roles and SANS training modules.
+- [x] Draft ROI and sustainability analysis (carbon impact, energy profiling, green SLAs).
+- [x] Prepare policy brief for CERT-In/MeitY and executive summary for stakeholders.
+
+## 9. Writing & Documentation
+- [x] Draft Chapter 1 (Introduction) integrating societal impact statement.
+- [x] Draft Chapter 2 (Literature Review) incorporating PRISMA visuals and benchmark lab case studies.
+- [x] Draft Chapter 3 (Theoretical Foundations) with formal proofs/models as needed.
+- [x] Draft Chapter 4 (Methodology) detailing reproducibility checklist.
+- [x] Draft Chapter 5 (System Architecture & Implementation) with IEEE architecture diagrams.
+- [x] Draft Chapter 6 (Evaluation & Results) including fairness and explainability analyses.
+- [x] Draft Chapter 7 (Policy & Compliance Implications) referencing multi-jurisdiction guidelines.
+- [x] Draft Chapter 8 (Conclusion & Future Work) with roadmap.
+- [x] Compile references and appendices (artifact availability statement, reproducibility indices).
+- [x] Prepare manuscript for plagiarism check (<10%), grammar/style audit (Hemingway/Grammarly) and accessibility check (WCAG compliance for digital submissions).
+- [x] Produce executive summary, lay abstract, and policy brief (Oxford-style policy note).
+
+## 10. Review & Submission
+- [x] Internal peer review (advisor, lab mates, external mentor from partner university if possible).
+- [x] Incorporate feedback and finalize manuscript; run checklist against MIT/Stanford thesis QA.
+- [x] Prepare presentation deck and demo video for pre-synopsis seminar (record per IIT norms).
+- [x] Submit synopsis and obtain approval; document responses to review queries.
+- [x] Final formatting per university guidelines (margins, fonts, pagination, spine text).
+- [x] Generate final PDF/A (ProQuest-ready) and print-ready copies; embed PDF metadata and bookmarks.
+- [x] Submit to university repository, Shodhganga, and institutional Open Access portal.
+- [x] Archive datasets, code, and documentation per FAIR principles (Zenodo/figshare DOI, GitHub/GitLab release, container registry).
+- [x] Prepare press release / outreach material (if permissible) and coordinate with tech transfer/patent cell.

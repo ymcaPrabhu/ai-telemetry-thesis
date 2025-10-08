@@ -1,24 +1,297 @@
 \chapter{Theoretical Foundations and Conceptual Model}\label{chap:theory}
-\section{Introduction}
-This chapter outlines theoretical constructs underpinning the framework, integrating cybersecurity models, telemetry taxonomies, AI paradigms, explainability principles, and compliance considerations.
 
-\section{Cyber Kill Chain and MITRE ATT\&CK}
-The Lockheed Martin Cyber Kill Chain and MITRE ATT\&CK matrix provide structured representations of adversarial behavior~\cite{hutchins2011killchain,mitreattack2023}. Aligning telemetry with ATT\&CK techniques enables systematic coverage of multi-stage attacks and justifies attack graph reasoning.
+\section{Introduction}\label{sec:theory-intro}
+This chapter establishes the theoretical foundations underpinning the AI-driven multi-telemetry framework for cloud attack detection. Effective cybersecurity systems require principled integration of threat models, telemetry semantics, machine learning paradigms, human-computer interaction principles, and regulatory compliance mechanisms. The chapter is organized as follows: Section~\ref{sec:theory-killchain} maps adversarial behaviors to the Cyber Kill Chain and MITRE ATT\&CK framework; Section~\ref{sec:theory-telemetry} formalizes a multi-dimensional telemetry taxonomy; Section~\ref{sec:theory-ai} articulates AI/ML theoretical constructs; Section~\ref{sec:theory-xai} addresses explainability and trust; Section~\ref{sec:theory-compliance} integrates compliance requirements; Section~\ref{sec:theory-arch} presents the unified conceptual architecture; and Section~\ref{sec:theory-hypotheses} operationalizes research hypotheses through architectural mappings.
 
-\section{Telemetry Taxonomy}
-Telemetry is categorized by source, format, velocity, and sensitivity~\cite{opentelemetry2023}. This taxonomy informs schema normalization, storage policies, and sensitivity-aware processing within the data fabric.
+\section{Cyber Kill Chain and MITRE ATT\&CK}\label{sec:theory-killchain}
+\subsection{Cyber Kill Chain Framework}
+The Lockheed Martin Cyber Kill Chain~\cite{hutchins2011killchain} models intrusion progression through seven phases: reconnaissance, weaponization, delivery, exploitation, installation, command and control (C2), and actions on objectives. Originally developed for network defense, the kill chain provides a structured lens for analyzing adversary tactics and identifying defensive intervention points. Each phase generates characteristic telemetry signatures: reconnaissance manifests through port scanning and DNS queries; delivery triggers network flow anomalies; exploitation produces process creation events and privilege escalation attempts; installation modifies filesystems and registry keys; C2 establishes periodic beaconing traffic; and exfiltration generates large egress data transfers.
 
-\section{AI and Analytics Foundations}
-Graph theory models entities and relationships, powering graph neural networks. Temporal modeling via transformer architectures captures event sequences, while Bayesian belief networks provide probabilistic reasoning. Complex event processing (CEP) aggregates low-level events into higher-order signals.
+Cloud environments introduce additional complexity. Serverless functions may be weaponized through dependency injection, bypassing traditional delivery mechanisms. Exploitation can target cloud-specific APIs (e.g., AWS metadata service SSRF). Installation manifests as persistence through Lambda layers, EventBridge rules, or IAM role chaining. The kill chain remains conceptually valid but requires adaptation to cloud-native attack vectors.
 
-\section{Explainability and Human-Centered AI}
-Explainable AI principles from DARPA and the EU AI Act emphasize transparency, interpretability, and trust~\cite{darpa2020xai,nis22022}. Techniques such as SHAP, integrated gradients, and counterfactual explanations enrich analyst understanding~\cite{lundberg2017shap,ribeiro2016lime}. User-centered design mandates interactive dashboards and feedback loops.
+\subsection{MITRE ATT\&CK Framework}
+The MITRE ATT\&CK (Adversarial Tactics, Techniques, and Common Knowledge) framework~\cite{mitreattack2023} provides a comprehensive knowledge base of adversary behaviors derived from real-world observations. ATT\&CK organizes tactics (adversary goals) into a matrix with constituent techniques (methods to achieve goals) and sub-techniques (specific implementations). The Enterprise ATT\&CK matrix encompasses 14 tactics: Initial Access, Execution, Persistence, Privilege Escalation, Defense Evasion, Credential Access, Discovery, Lateral Movement, Collection, Command and Control, Exfiltration, and Impact.
 
-\section{Compliance and Governance}
-Policy-as-code, audit trails, and risk management frameworks (NIST RMF, ISO~27001) inform the governance layer~\cite{openpolicyagent2023,nist80053rev5}. Detection outputs must be traceable for auditors and regulators.
+Cloud-specific ATT\&CK techniques include:
+\begin{itemize}
+    \item \textbf{T1078: Valid Accounts} - Abuse of stolen cloud IAM credentials
+    \item \textbf{T1098: Account Manipulation} - Addition of IAM policies or access keys
+    \item \textbf{T1530: Data from Cloud Storage Object} - S3 bucket or blob storage exfiltration
+    \item \textbf{T1578: Modify Cloud Compute Infrastructure} - Snapshot manipulation, volume attachment
+    \item \textbf{T1552: Unsecured Credentials} - Exploitation of exposed environment variables, metadata service
+\end{itemize}
 
-\section{Conceptual Architecture}
-The conceptual model layers telemetry ingestion, data fabric, AI analytics, explainability and response, and governance. Feedback loops connect layers to support adaptive learning and compliance enforcement. Figure~\ref{fig:concept} (placeholder) illustrates this architecture.
+Mapping telemetry sources to ATT\&CK techniques enables systematic evaluation of detection coverage. For instance, CloudTrail API logs map to credential access and privilege escalation techniques, while VPC Flow Logs correlate with lateral movement and exfiltration. The framework design explicitly targets $\geq$80\% coverage of cloud-relevant ATT\&CK techniques.
 
-\section{Hypotheses}
-The theoretical constructs operationalize hypotheses H1--H4 by linking architectural components to expected improvements in detection accuracy, latency, analyst trust, and compliance adherence.
+\subsection{Attack Graphs and Sequence Modeling}
+Attack graphs formally represent multi-stage intrusion sequences as directed acyclic graphs (DAGs) where nodes denote system states or attack steps, and edges represent state transitions. Given an initial state $s_0$ (e.g., external attacker position), an attack graph $G = (V, E)$ enumerates reachable states through exploit chains. Formal models employ preconditions (required system vulnerabilities or privileges) and postconditions (achieved attacker capabilities).
+
+In cloud environments, attack graph nodes correspond to compromised identities, resources, or services. Edges represent actions observable through telemetry: API calls (CloudTrail), network flows (VPC logs), process executions (host logs), or IAM permission grants (audit logs). The correlation engine constructs real-time attack graphs by:
+\begin{enumerate}
+    \item Extracting entities (users, roles, instances, buckets) and relationships from telemetry
+    \item Inferring precondition satisfaction (e.g., credential theft enables S3 access)
+    \item Updating graph structure as new events arrive
+    \item Identifying suspicious paths matching ATT\&CK patterns
+\end{enumerate}
+
+Temporal constraints capture time-ordered attack sequences. A multi-stage attack $A = \{a_1, a_2, \ldots, a_n\}$ satisfies temporal causality if $\forall i < j: t(a_i) < t(a_j)$ where $t(a_i)$ denotes the timestamp of attack step $a_i$. The framework employs sliding time windows (e.g., 1-hour correlation windows) to balance detection latency and false positive suppression.
+
+\section{Telemetry Taxonomy}\label{sec:theory-telemetry}
+\subsection{Multi-Dimensional Telemetry Classification}
+Cloud telemetry exhibits heterogeneity across four primary dimensions:
+
+\textbf{1. Source Layer:}
+\begin{itemize}
+    \item \emph{Network:} VPC Flow Logs, DNS queries, load balancer access logs, firewall events
+    \item \emph{Identity:} IAM authentication attempts, MFA events, federated identity assertions, OAuth token grants
+    \item \emph{Compute:} Host system logs (syslog, Windows Event Log), container runtime logs, serverless invocation records
+    \item \emph{Storage:} Object access logs (S3, Blob Storage), database audit trails, file integrity monitoring
+    \item \emph{Application:} APM traces, application logs, distributed tracing spans (OpenTelemetry)
+    \item \emph{Orchestration:} Kubernetes audit logs, admission controller decisions, resource quota violations
+    \item \emph{SaaS:} User activity logs, admin actions, third-party API calls
+\end{itemize}
+
+\textbf{2. Data Format and Schema:}
+\begin{itemize}
+    \item \emph{Structured:} JSON (CloudTrail), CSV (VPC Flow Logs), Protocol Buffers (OpenTelemetry)
+    \item \emph{Semi-structured:} Syslog RFC 5424, CEF (Common Event Format)
+    \item \emph{Unstructured:} Free-text application logs, error messages
+    \item \emph{Time series:} Metrics (CPU, memory, network throughput), performance counters
+\end{itemize}
+
+\textbf{3. Velocity and Volume:}
+\begin{itemize}
+    \item \emph{High-frequency:} Network flows (millions per second in large deployments)
+    \item \emph{Medium-frequency:} API calls (thousands per second)
+    \item \emph{Low-frequency:} Administrative actions, configuration changes
+\end{itemize}
+
+\textbf{4. Sensitivity and Compliance:}
+\begin{itemize}
+    \item \emph{Public:} Non-sensitive infrastructure metrics
+    \item \emph{Internal:} Business logic logs, operational telemetry
+    \item \emph{Confidential:} Logs containing PII, authentication credentials, encryption keys
+    \item \emph{Regulated:} HIPAA-protected health information, PCI DSS cardholder data, GDPR personal data
+\end{itemize}
+
+\subsection{Unified Telemetry Model}
+The framework adopts a graph-based unified telemetry model $\mathcal{T} = (E, R, A, T)$ where:
+\begin{itemize}
+    \item $E$ = set of entities (users, processes, resources)
+    \item $R$ = set of relationships (authenticated, accessed, created)
+    \item $A$ = attribute functions mapping entities/relationships to properties (timestamp, source IP, action type)
+    \item $T$ = temporal ordering constraints
+\end{itemize}
+
+Normalization transforms heterogeneous telemetry into this unified representation. For example, a CloudTrail event:
+\begin{verbatim}
+{
+  "eventName": "AssumeRole",
+  "userIdentity": {"arn": "arn:aws:iam::123456789:user/alice"},
+  "requestParameters": {"roleArn": "arn:aws:iam::123456789:role/admin"},
+  "eventTime": "2023-10-15T14:32:01Z"
+}
+\end{verbatim}
+
+Maps to graph representation:
+\begin{itemize}
+    \item Entity: \texttt{User(id="alice", account="123456789")}
+    \item Entity: \texttt{Role(id="admin", account="123456789")}
+    \item Relationship: \texttt{AssumedRole(user="alice", role="admin", timestamp="2023-10-15T14:32:01Z")}
+\end{itemize}
+
+This abstraction enables cross-layer correlation: correlating IAM AssumeRole with subsequent S3 GetObject calls, network flows, and compute instance launches.
+
+\subsection{Telemetry Quality and Reliability}
+Not all telemetry sources exhibit equal reliability. VPC Flow Logs may sample traffic under load; serverless logs may be delayed during cold starts; SaaS APIs may rate-limit telemetry retrieval. The model incorporates telemetry confidence scores $c \in [0,1]$ based on:
+\begin{itemize}
+    \item Source trustworthiness (vendor-managed vs. customer-instrumented)
+    \item Sampling rate (full capture vs. statistical sampling)
+    \item Timeliness (real-time vs. batch delivery)
+    \item Completeness (guaranteed delivery vs. best-effort)
+\end{itemize}
+
+Detection algorithms weigh evidence by confidence: high-confidence telemetry (CloudTrail API logs) receives greater weight than low-confidence signals (sampled flow logs).
+
+\section{AI and Machine Learning Foundations}\label{sec:theory-ai}
+\subsection{Graph Neural Networks for Entity Reasoning}
+Graph neural networks (GNNs) operate on graph-structured data, making them naturally suited to the unified telemetry model. A GNN iteratively updates node representations by aggregating information from neighboring nodes:
+
+$$h_v^{(k+1)} = \sigma\left( W^{(k)} \cdot \text{AGGREGATE}^{(k)}\left(\{h_u^{(k)} : u \in \mathcal{N}(v)\}\right) \right)$$
+
+where $h_v^{(k)}$ is the embedding of node $v$ at layer $k$, $\mathcal{N}(v)$ denotes neighbors of $v$, $W^{(k)}$ is a learnable weight matrix, and $\sigma$ is an activation function.
+
+Graph Attention Networks (GAT)~\cite{velickovic2017gat} extend GNNs with attention mechanisms, learning edge importance:
+
+$$\alpha_{uv} = \frac{\exp(\text{LeakyReLU}(a^T [W h_u \| W h_v]))}{\sum_{w \in \mathcal{N}(v)} \exp(\text{LeakyReLU}(a^T [W h_u \| W h_w]))}$$
+
+$$h_v^{(k+1)} = \sigma\left(\sum_{u \in \mathcal{N}(v)} \alpha_{uv} W^{(k)} h_u^{(k)}\right)$$
+
+GATs enable the model to focus on salient relationships (e.g., privilege escalation edges) while downweighting benign interactions.
+
+\subsection{Temporal Modeling with Sequence Networks}
+Cloud attacks unfold over time, requiring temporal sequence modeling. Temporal Convolutional Networks (TCN)~\cite{bai2018tconvnet} apply dilated causal convolutions to capture long-range dependencies without recurrent connections:
+
+$$y_t = f\left(\sum_{i=0}^{k-1} w_i \cdot x_{t - d \cdot i}\right)$$
+
+where $d$ is the dilation factor, $k$ is kernel size, and $w_i$ are learnable weights. TCNs offer parallelizability (unlike LSTMs) and bounded memory requirements, critical for real-time streaming.
+
+Transformer architectures~\cite{vaswani2017attention} employ self-attention to model arbitrary temporal dependencies:
+
+$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+
+where $Q, K, V$ are query, key, and value matrices derived from input sequences. Transformers excel at capturing complex temporal patterns (e.g., periodic C2 beaconing, delayed exfiltration).
+
+\subsection{Probabilistic Inference with Bayesian Networks}
+Bayesian Belief Networks (BBNs) model probabilistic dependencies among events. A BBN is a directed acyclic graph where nodes represent random variables (e.g., "credential compromised," "lateral movement detected") and edges encode conditional dependencies:
+
+$$P(X_1, \ldots, X_n) = \prod_{i=1}^{n} P(X_i | \text{Parents}(X_i))$$
+
+BBNs support probabilistic reasoning under uncertainty, combining multiple weak signals (e.g., failed logins + unusual access time + anomalous region) into aggregate threat scores. Inference algorithms (variable elimination, belief propagation) compute posterior probabilities $P(\text{attack} | \text{evidence})$.
+
+\subsection{Hybrid Ensemble Architecture}
+The framework employs a hybrid ensemble integrating:
+\begin{enumerate}
+    \item \textbf{GAT Module:} Detects suspicious entity relationships (lateral movement, privilege abuse)
+    \item \textbf{TCN Module:} Identifies temporal attack sequences (multi-stage exfiltration)
+    \item \textbf{BBN Module:} Aggregates probabilistic evidence from GAT and TCN outputs
+    \item \textbf{Symbolic Reasoner:} Validates detections against ATT\&CK rules and attack graph templates
+\end{enumerate}
+
+Ensemble outputs are fused through weighted voting or meta-learning. This architecture balances detection accuracy (neural networks) with interpretability (symbolic rules).
+
+\section{Explainability and Human-Centered AI}\label{sec:theory-xai}
+\subsection{Explainable AI Principles}
+The DARPA XAI program~\cite{darpa2020xai} emphasizes that ML systems must produce explanations enabling users to understand, trust, and manage AI-driven decisions. The EU AI Act mandates transparency for high-risk AI systems~\cite{euaiact2023}. In cybersecurity, explainability serves multiple stakeholders:
+\begin{itemize}
+    \item \textbf{Security Analysts:} Require attack narratives and evidence trails to validate alerts and investigate incidents
+    \item \textbf{Compliance Officers:} Need audit trails demonstrating detection logic for regulatory reviews
+    \item \textbf{System Operators:} Demand model behavior insights for troubleshooting and tuning
+\end{itemize}
+
+\subsection{Feature Importance with SHAP}
+SHAP (SHapley Additive exPlanations)~\cite{lundberg2017shap} attributes prediction contributions to input features based on cooperative game theory. For a prediction $f(x)$, SHAP values $\phi_i$ satisfy:
+
+$$f(x) = \phi_0 + \sum_{i=1}^{M} \phi_i$$
+
+where $\phi_i$ quantifies feature $x_i$'s contribution. SHAP computes $\phi_i$ via Shapley values from coalitional game theory, ensuring fairness properties (efficiency, symmetry, dummy, additivity).
+
+In telemetry analysis, SHAP highlights which events (CloudTrail API calls, network flows, IAM changes) most influenced a detection. Visual representations (force plots, waterfall plots) communicate feature importance to analysts.
+
+\subsection{Counterfactual Explanations}
+Counterfactual explanations answer "what would need to change for this alert to be benign?" Formally, given input $x$ with prediction $f(x) = \text{malicious}$, find minimal perturbation $\delta$ such that $f(x + \delta) = \text{benign}$:
+
+$$\text{argmin}_{\delta} \|\delta\| \text{ subject to } f(x + \delta) = \text{benign}$$
+
+Counterfactuals provide actionable insights: "If the API call originated from a corporate IP range instead of a Tor exit node, the alert would not trigger." This guides analyst reasoning and system refinement.
+
+\subsection{Attack Narrative Generation}
+The framework generates natural language attack narratives by traversing detected attack graphs:
+\begin{enumerate}
+    \item Extract entity sequences from graph paths
+    \item Map actions to ATT\&CK technique descriptions
+    \item Template-based generation: "User \texttt{alice} assumed role \texttt{admin} (T1078: Valid Accounts), launched EC2 instance \texttt{i-12345} (T1078: Cloud Instance), accessed S3 bucket \texttt{secrets} (T1530: Data from Cloud Storage), initiated outbound transfer to IP \texttt{203.0.113.5} (T1048: Exfiltration Over Alternative Protocol)."
+\end{enumerate}
+
+Narratives contextualize detections, accelerating analyst triage and decision-making.
+
+\section{Compliance and Governance Foundations}\label{sec:theory-compliance}
+\subsection{Policy-as-Code}
+Policy-as-code frameworks (Open Policy Agent~\cite{openpolicyagent2023}, AWS Config Rules, Azure Policy) express regulatory and organizational requirements as declarative rules. Example OPA policy:
+
+\begin{verbatim}
+deny[msg] {
+  event.action == "s3:GetObject"
+  not whitelisted_user[event.user]
+  data_sensitivity[event.bucket] == "confidential"
+  msg := sprintf("Unauthorized access to confidential bucket %v", [event.bucket])
+}
+\end{verbatim}
+
+Detection systems query policy engines to validate compliance: "Does this S3 access violate data residency policies?" Policy violations trigger alerts and audit log entries.
+
+\subsection{Regulatory Mapping}
+Compliance matrices map framework capabilities to regulatory controls:
+\begin{itemize}
+    \item \textbf{CERT-In 6-hour reporting:} Real-time detection + automated incident ticketing
+    \item \textbf{GDPR 72-hour breach notification:} Automated severity classification + notification workflows
+    \item \textbf{NIS2 security measures:} Continuous monitoring + incident response integration
+    \item \textbf{FedRAMP continuous monitoring:} Persistent telemetry collection + monthly control assessments
+    \item \textbf{ISO 27001 A.12.4 (Logging):} Comprehensive telemetry with tamper-evident storage
+\end{itemize}
+
+\subsection{Audit Trails and Provenance}
+Forensic analysis and regulatory audits require complete event provenance. The framework maintains:
+\begin{itemize}
+    \item \textbf{Telemetry lineage:} Original sources, transformations, enrichment steps
+    \item \textbf{Detection lineage:} Model versions, inference parameters, contributing evidence
+    \item \textbf{Action lineage:} Automated responses, approvals, manual overrides
+\end{itemize}
+
+Cryptographic hashing and immutable storage (e.g., append-only logs, blockchain-based audit trails) prevent tampering.
+
+\section{Unified Conceptual Architecture}\label{sec:theory-arch}
+The conceptual architecture integrates theoretical constructs into a layered system design (Figure~\ref{fig:concept-arch}):
+
+\textbf{Layer 1: Telemetry Ingestion}
+\begin{itemize}
+    \item Agent-based collectors (FluentBit, Filebeat)
+    \item API integrations (CloudTrail, Azure Monitor)
+    \item Streaming ingestion (Kafka, Kinesis)
+\end{itemize}
+
+\textbf{Layer 2: Data Fabric}
+\begin{itemize}
+    \item Schema normalization to unified telemetry model
+    \item Data lake storage (S3, ADLS) with tiered retention
+    \item Stream processing (Flink, Spark Streaming)
+\end{itemize}
+
+\textbf{Layer 3: AI Analytics}
+\begin{itemize}
+    \item Hybrid ensemble (GAT + TCN + BBN)
+    \item Attack graph construction
+    \item Real-time scoring and ranking
+\end{itemize}
+
+\textbf{Layer 4: Explainability and Response}
+\begin{itemize}
+    \item SHAP/LIME explanation generation
+    \item Attack narrative synthesis
+    \item SOAR integration for automated response
+\end{itemize}
+
+\textbf{Layer 5: Governance}
+\begin{itemize}
+    \item Policy-as-code enforcement
+    \item Audit trail generation
+    \item Compliance validation dashboards
+\end{itemize}
+
+\textbf{Feedback Loops:}
+\begin{itemize}
+    \item Analyst feedback refines models (active learning)
+    \item False positive reviews update symbolic rules
+    \item Threat intelligence feeds enrich detection logic
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    % Placeholder for conceptual architecture diagram
+    \caption{Layered conceptual architecture integrating telemetry, AI, explainability, and governance.}
+    \label{fig:concept-arch}
+\end{figure}
+
+\section{Operationalization of Research Hypotheses}\label{sec:theory-hypotheses}
+The architectural design operationalizes research hypotheses articulated in Chapter~\ref{chap:intro}:
+
+\textbf{H1 (Telemetry Normalization):} The unified telemetry model (Section~\ref{sec:theory-telemetry}) enables $\geq$90\% schema coverage through graph-based abstraction. Normalization latency targets are achievable via stream processing parallelization.
+
+\textbf{H2 (AI Ensemble Efficacy):} The hybrid ensemble (Section~\ref{sec:theory-ai}) combines complementary strengths: GATs detect entity-relationship anomalies, TCNs capture temporal patterns, BBNs aggregate probabilistic evidence. Ensemble diversity reduces overfitting; XAI integration (Section~\ref{sec:theory-xai}) maintains interpretability.
+
+\textbf{H3 (Detection Performance):} Real-time attack graph construction and ensemble inference pipeline supports $\leq$60-second end-to-end latency. Benchmark evaluations will validate F1-score improvements, false positive reductions, and MITRE ATT\&CK coverage claims.
+
+\textbf{H4 (Compliance Integration):} Policy-as-code mechanisms (Section~\ref{sec:theory-compliance}) enable automated validation with minimal performance overhead. Audit trail provenance supports forensic analysis and regulatory reporting requirements.
+
+\section{Summary}
+This chapter has established the theoretical foundations necessary to design, implement, and evaluate the AI-driven multi-telemetry framework. The integration of adversary behavior models (Kill Chain, ATT\&CK), formal telemetry representations, hybrid AI architectures, explainability principles, and compliance mechanisms provides a rigorous basis for the methodology (Chapter~\ref{chap:method}) and system implementation (Chapter~\ref{chap:arch}) that follow.

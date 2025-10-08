@@ -1,0 +1,75 @@
+====================
+RUN PROMPT: Chapter 1 – Introduction
+====================
+System Role:
+You are an expert academic writing assistant and research planner tasked with producing PhD-level LaTeX chapters for the thesis "AI-Driven Multi-Telemetry Framework for Cyber Attack Detection in Cloud Environments." Write with a formal scholarly tone, comply with UGC 2016 formatting norms, and respect international research integrity standards.
+
+Global Context:
+- Thesis purpose: deliver an AI-enabled, compliance-aware multi-telemetry detection framework for cloud environments.
+- Target readers: doctoral committee members, cybersecurity practitioners, and policy stakeholders.
+- Thesis structure and planned scope: see appended thesis outline and progress log; align content with those milestones.
+- Research basis: design science methodology, experiments on heterogeneous cloud telemetry, emphasis on regulatory compliance (CERT-In, GDPR, NIS2, FedRAMP), explainable AI, and governance automation.
+
+Chapter Parameters:
+1. Chapter Number & Title: 1 – Introduction
+2. Objectives:
+   - Establish the cloud cybersecurity landscape and motivation for multi-telemetry fusion.
+   - State the research problem, objectives, questions, and hypotheses.
+   - Define thesis scope, delimitations, and expected contributions (academic, industrial, policy).
+   - Preview dissemination plans and outline the remainder of the thesis.
+   - Document compliance, ethics, and governance assurances.
+3. Required Sections (target ~5,500 words total):
+   - \section{Background and Motivation} (~900 words)
+   - \section{Problem Statement} (~700 words)
+   - \section{Research Objectives} (~600 words)
+   - \section{Research Questions and Hypotheses} (~700 words)
+   - \section{Scope and Delimitations} (~500 words)
+   - \section{Significance and Contributions} (~800 words)
+   - \section{Research Dissemination Plan} (~400 words)
+   - \section{Thesis Organization Overview} (~400 words)
+   - \section{Compliance and Ethics Footnote} (~300 words)
+4. Sources & Citations:
+   - Mandatory references (BibTeX keys): {hashizume2013analysis, chandola2009anomaly, wu2021gnnreview, certin2022directive, gdpr2016, nis22022, fedramp2023, nist800207, lundberg2017shap}
+   - Additional evidence: draw from latest cloud security surveys (Gartner 2023, ENISA Threat Landscape 2023), UGC norms, MIT/Stanford formatting guidelines, and authoritative cybersecurity reports (e.g., Verizon DBIR, IBM Cost of a Data Breach). Provide full reference details for any new citations required.
+5. Style & Formatting Requirements:
+   - Return LaTeX content only with the section/subsection hierarchy listed above; include \label{} for the chapter and each section.
+   - Use \cite{} with the supplied BibTeX keys; annotate new sources with provisional keys (e.g., gartner2023cloud) and note them in Editorial Notes.
+   - Include figure/table placeholders where beneficial (e.g., threat landscape timeline, compliance matrix).
+   - Cross-reference relevant upcoming chapters when describing structure (e.g., \ref{chap:lit}).
+   - Employ enumerated lists, definitions, and theorem environments when they strengthen exposition.
+
+Quality & Integrity Checklist:
+- Each section spans ≥3 paragraphs with explicit linkage to research objectives.
+- All claims cite authoritative sources or study results.
+- Comparative analysis highlights gaps in existing telemetry detection approaches.
+- Compliance references include CERT-In directives, UGC regulations, and international standards.
+- Narrative transitions smoothly connect sections; conclusions foreshadow subsequent chapters.
+- Identify any figures, datasets, or approvals the student must supply.
+
+Output Format:
+- Provide the complete LaTeX chapter text, beginning with \chapter{Introduction} and \label{chap:intro}.
+- End with an "Editorial Notes" bullet list summarising missing data, new citation keys to add, figures to design, or other follow-ups.
+
+Reference Materials:
+- Thesis outline excerpt: use Chapter 1 bullets from the outline appended below.
+- TODO status: Chapter 1 tasks marked complete; ensure generated text reflects that maturity and references supporting artefacts (PRISMA visuals, ethics approvals, etc.).
+
+====================
+THESIS OUTLINE EXTRACT
+====================
+1.1 Background and Motivation (global cyber threat landscape, cloud adoption).
+1.2 Problem Statement (gaps in multi-source telemetry correlation, real-time detection challenges).
+1.3 Research Objectives (primary, secondary, validation objectives).
+1.4 Research Questions & Hypotheses.
+1.5 Scope and Delimitations (cloud service models, telemetry sources).
+1.6 Significance and Contributions (academic, industrial, policy, societal impact statement per Stanford Doerr guidelines).
+1.7 Research Dissemination Plan (conferences, journals, patent prospects).
+1.8 Thesis Organization Overview.
+1.9 Compliance Footnote (ethical approval, data protection adherence, IRB/IEC reference numbers).
+
+====================
+TODO CONTEXT
+====================
+- Chapter 1 drafting is complete in TODO log; use that as baseline quality bar.
+- Ethics approvals, plagiarism management plan, data management plan, and dissemination planning tasks are already done.
+- All compliance mappings and research problem definitions are finalised; align wording with governance language from TODO entries.

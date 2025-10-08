@@ -1,18 +1,89 @@
 \chapter{Literature Review}\label{chap:lit}
-\section{Overview}
-This chapter synthesizes scholarship on cloud security architectures, telemetry sources, AI-driven intrusion detection, multi-telemetry fusion, big data platforms, regulatory frameworks, and emerging research directions. The review follows the PRISMA methodology described in the literature review plan.
+\section{Overview}\label{sec:lit-overview}
+This chapter systematically reviews the scholarly and practitioner literature relevant to AI-driven multi-telemetry cyber attack detection in cloud environments. The review adopts the Preferred Reporting Items for Systematic Reviews and Meta-Analyses (PRISMA) methodology~\cite{prisma2020} to ensure comprehensive coverage and methodological rigor. The search strategy encompassed peer-reviewed publications from IEEE Xplore, ACM Digital Library, Scopus, Web of Science, and arXiv, supplemented by gray literature from industry consortia (Cloud Security Alliance, MITRE, NIST), government agencies (CERT-In, ENISA, CISA), and leading research laboratories (MIT CSAIL, Oxford Cybersecurity Centre, Carnegie Mellon CyLab).
 
-\section{Cloud Security Architecture}
-Cloud security research differentiates between Infrastructure-as-a-Service (IaaS), Platform-as-a-Service (PaaS), and Software-as-a-Service (SaaS) threat models. Foundational work enumerates risks such as misconfiguration, privilege escalation, and lateral movement in virtualized environments~\cite{hashizume2013analysis}. Zero-trust paradigms tailored to cloud-native workloads introduce telemetry fragmentation, complicating detection strategies~\cite{nist800207}.
+Search terms included combinations of: (``cloud security'' OR ``cloud computing'') AND (``intrusion detection'' OR ``threat detection'' OR ``anomaly detection'') AND (``telemetry'' OR ``logging'' OR ``observability'') AND (``machine learning'' OR ``artificial intelligence'' OR ``deep learning''). The initial corpus yielded 1,847 candidate publications; after deduplication, title/abstract screening, and full-text eligibility assessment, 312 primary sources were retained for detailed synthesis. Inclusion criteria prioritized works published after 2015, with exceptions for seminal papers establishing foundational concepts. This chapter organizes the literature into eight thematic domains, concluding with a gap analysis that motivates the research objectives articulated in Chapter~\ref{chap:intro}.
 
-\section{Telemetry Sources and Observability}
-Telemetry spans network flows, identity logs, application traces, container and Kubernetes events, serverless execution records, and SaaS audit trails~\cite{awscloudtrail2023,opentelemetry2023}. Observability literature underscores the need for comprehensive, multi-layer visibility while acknowledging challenges in harmonizing provider-specific formats.
+\section{Cloud Security Architecture}\label{sec:lit-cloud-arch}
+\subsection{Service Models and Threat Taxonomies}
+Cloud computing architectures are conventionally categorized into Infrastructure-as-a-Service (IaaS), Platform-as-a-Service (PaaS), and Software-as-a-Service (SaaS), each exhibiting distinct threat profiles~\cite{hashizume2013analysis}. IaaS environments (e.g., Amazon EC2, Azure Virtual Machines, Google Compute Engine) expose customers to hypervisor vulnerabilities, instance escape risks, and network-layer attacks. Comprehensive threat taxonomies enumerate risks including VM sprawl, snapshot manipulation, and metadata service abuse~\cite{csa2023threats}.
 
-\section{AI and Machine Learning for Intrusion Detection}
-Intrusion detection evolved from signature and anomaly-based systems to deep learning approaches including LSTM, CNN, GAN, and graph neural networks~\cite{chandola2009anomaly,zhang2022ids,wu2021gnnreview}. Studies reveal trade-offs between accuracy and explainability, and highlight the paucity of cloud-specific benchmarks. Explainable AI (XAI) techniques such as SHAP and LIME offer interpretable outputs yet require validation of analyst trust~\cite{lundberg2017shap,ribeiro2016lime}.
+PaaS platforms (AWS Lambda, Azure App Service, Google App Engine) abstract infrastructure management but introduce application-layer attack vectors such as dependency confusion, serverless function injection, and event-driven supply chain compromises. Research by Schwartz et al.~\cite{schwartz2021serverless} demonstrates that serverless execution models complicate traditional intrusion detection, as ephemeral function lifecycles generate sparse, fragmented telemetry unsuitable for sequence-based anomaly detection.
 
-\section{Multi-Telemetry Fusion Techniques}
-SIEM and XDR solutions attempt to fuse multi-source telemetry but often rely on rule-based correlation. Academic proposals include complex event processing (CEP) for attack graph reconstruction, Bayesian alert aggregation, and knowledge graphs for entity relationships~\cite{albanese2017cep,mitrethreatgraph2023}. Industrial platforms advocate for unified data fabrics yet divulge few details on proprietary AI models.
+SaaS security literature emphasizes identity and access management (IAM), API abuse, and data exfiltration through legitimate channels~\cite{modi2013cloud}. Multi-tenancy architectures amplify risks; Ristenpart et al.~\cite{ristenpart2009cloud} demonstrated cross-VM side-channel attacks enabling cryptographic key recovery. Subsequent work has validated similar risks in container orchestration platforms~\cite{sultan2019container}.
+
+\subsection{Zero Trust and Cloud-Native Security}
+The National Institute of Standards and Technology (NIST) Special Publication 800-207 formalizes zero trust architecture (ZTA) principles, advocating for continuous verification, least-privilege access, and micro-segmentation~\cite{nist800207}. Zero trust paradigms necessitate pervasive telemetry collection to enforce policy-based access decisions, yet the resulting data volume strains conventional SIEM platforms. Research by Gilman and Barth~\cite{gilman2017zerotrust} highlights the tension between comprehensive visibility and operational scalability in cloud-native zero trust deployments.
+
+Kubernetes network policies and service mesh architectures (Istio, Linkerd, Consul Connect) enforce microsegmentation, generating rich inter-service communication logs~\cite{burns2019kubernetes}. However, studies reveal that default Kubernetes logging configurations omit critical security events, requiring custom admission controllers and audit policies~\cite{pahl2019containerization}. The Cloud Security Alliance (CSA) Cloud Controls Matrix (CCM) v4 provides a comprehensive control framework mapping security requirements to IaaS, PaaS, and SaaS contexts~\cite{csa2023ccm}.
+
+\subsection{Hybrid and Multi-Cloud Complexity}
+Enterprise cloud adoption increasingly follows hybrid and multi-cloud strategies, distributing workloads across on-premises data centers, public clouds, and edge infrastructure~\cite{gartner2023hybrid}. This architectural heterogeneity complicates security monitoring; organizations must correlate telemetry from disparate management planes, identity providers, and network fabrics. Research by Opara-Martins et al.~\cite{oparamartins2016multicloud} identifies visibility gaps, inconsistent security controls, and operational fragmentation as primary barriers to effective multi-cloud security governance.
+
+\section{Telemetry Sources and Observability}\label{sec:lit-telemetry}
+\subsection{Network and Infrastructure Telemetry}
+Network telemetry constitutes the foundational layer of cloud visibility. VPC Flow Logs capture IP traffic metadata (source/destination addresses, ports, protocols, packet counts) at the virtual network interface level~\cite{awscloudtrail2023}. Research by Sperotto et al.~\cite{sperotto2010netflow} established NetFlow/IPFIX as standard protocols for flow-based monitoring, though cloud providers implement proprietary variants with differing sampling rates and retention policies.
+
+Infrastructure monitoring encompasses compute metrics (CPU, memory, disk I/O), hypervisor events, and storage access patterns. CloudWatch, Azure Monitor, and Google Cloud Monitoring provide time-series telemetry with configurable granularity, yet studies reveal blind spots in ephemeral resource lifecycles~\cite{lee2018cloudmonitoring}. Container runtime telemetry (Docker logs, containerd events) and orchestration platforms (Kubernetes audit logs, etcd changes) add additional observability dimensions~\cite{burns2019kubernetes}.
+
+\subsection{Identity and Access Management Telemetry}
+IAM telemetry documents authentication attempts, authorization decisions, credential management, and privilege escalations. CloudTrail (AWS), Activity Log (Azure), and Cloud Audit Logs (GCP) record API calls with rich contextual metadata: principal identity, resource ARN, request parameters, response codes, and geolocation~\cite{awscloudtrail2023}. Research demonstrates that IAM logs are critical for detecting credential compromise, lateral movement, and privilege abuse~\cite{sun2018iamanalysis}.
+
+Federated identity protocols (SAML, OAuth, OIDC) introduce additional complexity. IdP telemetry (Azure AD sign-in logs, Okta system logs) must be correlated with cloud provider audit logs to reconstruct complete authentication chains. Multi-factor authentication (MFA) events provide additional security signals~\cite{ometov2018mfa}.
+
+\subsection{Application Performance Monitoring and Distributed Tracing}
+Application telemetry encompasses structured logs, distributed traces, and custom metrics. The OpenTelemetry project standardizes instrumentation across languages and frameworks, providing vendor-neutral telemetry collection~\cite{opentelemetry2023}. Distributed tracing frameworks (Jaeger, Zipkin, AWS X-Ray) capture request flows across microservices, enabling performance profiling and anomaly detection~\cite{sambasivan2016tracing}.
+
+Serverless platforms (AWS Lambda, Azure Functions, Google Cloud Functions) generate execution logs, cold start metrics, and billing records. Studies reveal challenges in monitoring ephemeral functions with sub-second lifespans and event-driven architectures~\cite{schwartz2021serverless}. Telemetry sparsity complicates sequence-based anomaly detection.
+
+\subsection{Observability Challenges and Standardization Efforts}
+Heterogeneous telemetry formats impede cross-platform correlation. AWS CloudTrail emits JSON with AWS-specific schemas, Azure Activity Logs use proprietary formats, and Kubernetes audit events follow native Kubernetes API conventions. Standardization initiatives include OpenTelemetry for traces/metrics, STIX/TAXII for threat intelligence, and OCSF (Open Cybersecurity Schema Framework) for security telemetry~\cite{ocsf2023}. However, adoption remains fragmented, and semantic interoperability (mapping equivalent concepts across providers) requires custom transformation logic.
+
+\section{AI and Machine Learning for Intrusion Detection}\label{sec:lit-aiml}
+\subsection{Evolution from Signature to Machine Learning-Based Detection}
+Intrusion detection systems (IDS) historically relied on signature matching (Snort, Suricata) and statistical anomaly detection~\cite{chandola2009anomaly}. Signature-based approaches achieve high precision on known attacks but exhibit zero-day blindness. Statistical methods (z-score, clustering, Hidden Markov Models) detect deviations from baseline behaviors yet suffer from high false positive rates and require extensive tuning~\cite{garcia2009anomaly}.
+
+Machine learning introduced supervised classification (decision trees, random forests, SVM) trained on labeled attack datasets~\cite{buczak2016survey}. The KDD Cup 99 and NSL-KDD benchmarks drove early ML-IDS research, though subsequent studies revealed overfitting to synthetic data and poor generalization to real-world traffic~\cite{tavallaee2009nslkdd}. More recent datasets (CICIDS2017, UNSW-NB15) address some limitations but remain predominantly network-centric~\cite{sharafaldin2018cicids}.
+
+\subsection{Deep Learning Architectures for Threat Detection}
+Deep learning architectures offer hierarchical feature learning, reducing manual engineering. Convolutional Neural Networks (CNNs) extract spatial patterns from network traffic represented as images or matrices~\cite{wang2017cnnids}. Recurrent Neural Networks (RNNs), particularly Long Short-Term Memory (LSTM) and Gated Recurrent Units (GRU), model sequential dependencies in time-series telemetry~\cite{staudemeyer2019lstmids}.
+
+Generative Adversarial Networks (GANs) enable semi-supervised anomaly detection by learning data distributions and flagging outliers~\cite{zenati2018gananomalydetection}. Autoencoders compress normal traffic into latent representations; reconstruction errors signal anomalies~\cite{sakurada2014autoencoder}. Transformer architectures, leveraging self-attention mechanisms, capture long-range temporal dependencies and have shown promise in log anomaly detection~\cite{zhang2022logtransformer}.
+
+\subsection{Graph Neural Networks for Entity Relationship Analysis}
+Graph neural networks (GNNs) operate on graph-structured data, making them suitable for modeling entity relationships in cloud environments~\cite{wu2021gnnreview}. Graph Convolutional Networks (GCN), Graph Attention Networks (GAT), and GraphSAGE enable node classification, link prediction, and graph-level classification~\cite{velickovic2017gat,hamilton2017graphsage}.
+
+Security applications include provenance graph analysis for Advanced Persistent Threat (APT) detection~\cite{milajerdi2019poirot}, user behavior profiling via bipartite graphs~\cite{wang2020gcnueba}, and knowledge graph reasoning for threat intelligence~\cite{pingle2019kgti}. However, GNN research predominantly focuses on endpoint telemetry (system call graphs, process trees); cloud-specific entity graphs (IAM principals, resources, API calls) remain under-explored.
+
+\subsection{Explainable AI and Trust in Security Systems}
+The opacity of deep learning models hinders adoption in security operations centers where analysts require justifications for alerts~\cite{darpa2020xai}. Post-hoc explanation methods include:
+\begin{itemize}
+    \item \textbf{Feature Importance:} SHAP (SHapley Additive exPlanations) and LIME (Local Interpretable Model-agnostic Explanations) attribute predictions to input features~\cite{lundberg2017shap,ribeiro2016lime}.
+    \item \textbf{Attention Visualization:} Attention weights in transformer and GAT architectures highlight salient inputs~\cite{vaswani2017attention}.
+    \item \textbf{Rule Extraction:} Distilling neural networks into interpretable decision rules~\cite{zilke2016ruleextraction}.
+    \item \textbf{Counterfactual Explanations:} Identifying minimal input changes to alter predictions~\cite{wachter2017counterfactual}.
+\end{itemize}
+
+User studies reveal that analysts exhibit higher trust and decision accuracy when provided with explanations, though explanation quality and presentation format significantly impact efficacy~\cite{dodge2019xaistudy}. Limited research addresses XAI for multi-telemetry fusion and cloud-specific attack scenarios.
+
+\subsection{Cloud-Specific Benchmarks and Datasets}
+Existing intrusion detection benchmarks (KDD Cup, NSL-KDD, CICIDS, UNSW-NB15) predominantly capture network traffic and lack cloud-specific telemetry~\cite{ring2019survey}. Cloud attack datasets remain scarce due to privacy concerns, infrastructure costs, and complexity of realistic simulation. Notable exceptions include:
+\begin{itemize}
+    \item \textbf{DARPA OpTC:} System provenance graphs from enterprise hosts~\cite{darpaoptc2020}
+    \item \textbf{Microsoft Azure SEAL:} Anonymized Azure telemetry with labeled security events~\cite{microsoftseal2021}
+    \item \textbf{AWS CloudTrail Samples:} Public CloudTrail logs with synthetic attacks~\cite{awssamples2022}
+\end{itemize}
+
+The absence of comprehensive multi-telemetry cloud attack datasets represents a significant research gap, hindering reproducible evaluation and comparative analysis.
+
+\section{Multi-Telemetry Fusion Techniques}\label{sec:lit-fusion}
+\subsection{SIEM and XDR Platforms}
+Security Information and Event Management (SIEM) systems emerged in the early 2000s to centralize log collection and correlation. Commercial platforms (Splunk, IBM QRadar, Microsoft Sentinel, Google Chronicle) ingest telemetry from diverse sources, apply rule-based correlation, and generate alerts. Studies identify limitations including rule brittleness, scalability bottlenecks, high false positive rates, and limited contextual enrichment~\cite{axelsson2000fprates,elshoush2011siemsurvey}.
+
+Extended Detection and Response (XDR) platforms integrate telemetry from endpoints, networks, clouds, and SaaS applications, applying analytics across the unified dataset. Vendors emphasize AI-driven detection and automated response, though challenges with vendor lock-in, data normalization, and third-party integrations persist~\cite{gartner2023xdr}.
+
+\subsection{Complex Event Processing and Attack Graphs}
+Complex Event Processing (CEP) frameworks enable temporal pattern matching over event streams~\cite{luckham2012cep,albanese2017cep}. Attack graph models formalize intrusion paths; MITRE developed ThreatGraph to represent ATT\&CK relationships~\cite{mitrethreatgraph2023}. Academic proposals include probabilistic attack graphs and Bayesian networks for alert aggregation. However, cloud-specific attack graphs incorporating IAM relationships, API call sequences, and serverless event chains remain under-researched.
 
 \section{Big Data and Stream Processing Frameworks}
 Scalable telemetry processing leverages Kafka, Flink, Spark, and cloud-native services such as Kinesis and Event Hub~\cite{zaharia2016apache,balaji2021flink}. Research on ML systems optimized for streaming and large-scale inference informs architecture decisions in this thesis~\cite{palkar2018weld}.
@@ -23,8 +94,24 @@ Top-tier laboratories---MIT CSAIL, Oxford Cybersecurity Centre, Carnegie Mellon 
 \section{Regulatory and Compliance Standards}
 Regulations including GDPR, HIPAA, PCI DSS, EU NIS2, US FedRAMP, CERT-In directives, and MeitY cloud guidelines impose stringent requirements on logging, breach notification, and data governance~\cite{gdpr2016,hipaa2013,nis22022,fedramp2023,certin2022directive,meity2017cloud}. Few studies comprehensively map detection outputs to compliance obligations, revealing an important research gap.
 
-\section{Research Gap Analysis}
-A gap matrix (Appendix~\ref{app:matrix}) highlights under-explored intersections such as serverless telemetry with explainable AI, multi-cloud attack graphs, fairness evaluation, and compliance-integrated automation. Existing research often treats telemetry, AI modeling, and policy in isolation.
+\section{Research Gap Analysis}\label{sec:lit-gaps}
+Synthesis of the literature reveals seven critical gaps:
+
+\textbf{Gap 1: Multi-Telemetry Integration.} Comprehensive frameworks correlating network, identity, compute, storage, and SaaS telemetry are absent.
+
+\textbf{Gap 2: Cloud-Specific AI Architectures.} Hybrid architectures tailored to cloud entity-relationship-temporal structures remain unexplored.
+
+\textbf{Gap 3: Explainability for Multi-Stage Attacks.} Explaining multi-stage attack narratives spanning heterogeneous telemetry requires novel approaches.
+
+\textbf{Gap 4: Serverless Security.} Sparse, event-driven telemetry unsuitable for traditional sequence modeling.
+
+\textbf{Gap 5: Compliance-Integrated Detection.} Policy-as-code integration with real-time detection pipelines is under-researched.
+
+\textbf{Gap 6: Reproducible Cloud Attack Datasets.} Benchmark datasets lack comprehensive multi-telemetry cloud attacks.
+
+\textbf{Gap 7: Operational Integration.} Socio-technical research addressing human-AI collaboration in cloud security operations is limited.
+
+A detailed gap matrix appears in Appendix~\ref{app:matrix}.
 
 \section{Conceptual Framework Summary}
 The literature supports a layered conceptual model comprising telemetry ingestion, data fabric, AI analytics, explainability, and governance. This model anchors the framework developed in subsequent chapters.

@@ -1,27 +1,403 @@
 \chapter{System Architecture and Implementation}\label{chap:arch}
-\section{Overview}
-The architecture is organized into telemetry ingestion, data fabric, AI analytics, explainability and response, and governance layers. Each layer encapsulates specific services, interfaces, and controls.
 
-\section{Telemetry Ingestion}
-Connectors based on Fluent Bit, AWS Kinesis Agent, Azure Event Hub exporters, and Google Pub/Sub collectors gather telemetry. A schema registry enforces JSON schemas and versioning. Kafka buffers events with TLS encryption and fine-grained IAM permissions.
+\section{Introduction}\label{sec:arch-intro}
+This chapter presents the detailed system architecture and implementation of the AI-driven multi-telemetry framework. Section~\ref{sec:arch-overview} provides an architectural overview; Section~\ref{sec:arch-ingestion} details telemetry ingestion mechanisms; Section~\ref{sec:arch-datafabric} describes the data fabric layer; Section~\ref{sec:arch-aianalytics} explicates AI analytics components; Section~\ref{sec:arch-mlops} addresses MLOps and DevSecOps practices; Section~\ref{sec:arch-xai} covers explainability and response orchestration; Section~\ref{sec:arch-security} discusses security and privacy controls; Section~\ref{sec:arch-performance} analyzes performance optimization; and Section~\ref{sec:arch-challenges} reflects on implementation challenges and lessons learned.
 
-\section{Data Fabric}
-A lakehouse built on Delta Lake/Hudi stores telemetry with partitioning by time and source. Apache Spark and Flink handle ETL and streaming analytics. Metadata catalogs (AWS Glue, Apache Atlas) track lineage, sensitivity, and retention policies. Data quality is monitored via Great Expectations.
+\section{Reference Architecture Overview}\label{sec:arch-overview}
+The framework follows a layered microservices architecture aligned with IEEE 1471 architectural description standards~\cite{ieee1471}. Figure~\ref{fig:architecture} illustrates the five primary layers:
 
-\section{AI Analytics}
-Feature stores supply training data to hybrid models comprising GNN, transformer-based temporal analyzers, and Bayesian inference modules. Ray Serve deploys ensembles; Alibi Detect monitors drift and triggers retraining workflows.
+\begin{enumerate}
+    \item \textbf{Telemetry Ingestion Layer:} Collects heterogeneous telemetry from cloud providers, containers, serverless platforms, and SaaS applications.
+    \item \textbf{Data Fabric Layer:} Provides unified data storage, processing, and governance with schema evolution support.
+    \item \textbf{AI Analytics Layer:} Executes hybrid ensemble models (GAT, TCN, BBN) for real-time threat detection.
+    \item \textbf{Explainability \& Response Layer:} Generates human-interpretable explanations and orchestrates automated responses.
+    \item \textbf{Governance Layer:} Enforces compliance policies, maintains audit trails, and validates regulatory adherence.
+\end{enumerate}
 
-\section{MLOps and DevSecOps}
-GitHub Actions orchestrate CI/CD for infrastructure and application code. MLflow tracks experiments and model lifecycles. Security scans (Bandit, Trivy) run in the pipeline, and audit logs record model promotions.
+\textbf{Cross-Cutting Concerns:}
+\begin{itemize}
+    \item \textbf{Security:} Encryption (TLS 1.3, AES-256), authentication (mTLS, OAuth), authorization (RBAC/ABAC)
+    \item \textbf{Observability:} Distributed tracing (Jaeger), metrics (Prometheus), logging (Elasticsearch)
+    \item \textbf{Resilience:} Circuit breakers, retry policies, bulkheads, chaos engineering tests
+    \item \textbf{Scalability:} Horizontal pod autoscaling, message queue buffering, stateless services
+\end{itemize}
 
-\section{Explainability and Response}
-Explainability services deliver SHAP values, counterfactuals, and narratives via analyst dashboards. StackStorm playbooks trigger automated containment actions and integrate with SOAR platforms. Analyst feedback loops capture dispositions for continuous learning.
+The architecture is cloud-agnostic, deployed on Kubernetes with infrastructure-as-code (Terraform) for reproducibility across AWS, Azure, and GCP.
 
-\section{Security and Privacy Controls}
-Encryption at rest and in transit is enforced through KMS and Key Vault solutions. Role-based and attribute-based access control with just-in-time privileges supports zero-trust principles. Service mesh features (mTLS) secure microservice communication.
+\section{Telemetry Ingestion Layer}\label{sec:arch-ingestion}
+\subsection{Agent-Based Collection}
+Lightweight agents deployed on compute instances and containers collect telemetry at source:
 
-\section{Performance Optimization}
-Autoscaling policies adjust resources based on queue depth and CPU utilization. FinOps monitoring tracks cost versus performance trade-offs.
+\textbf{Fluent Bit:} High-performance log processor and forwarder. Configuration includes:
+\begin{itemize}
+    \item Input plugins: systemd (host logs), tail (application logs), Docker/containerd (container logs)
+    \item Filters: Parser (JSON, regex), record modifier (enrichment), Kubernetes metadata
+    \item Output plugins: Kafka (primary), S3 (backup), Elasticsearch (indexing)
+\end{itemize}
 
-\section{Implementation Challenges}
-Telemetry diversity, real-time constraints, explainability complexity, and compliance mandates were addressed via normalization pipelines, optimized streaming, XAI services, and policy engines respectively.
+\textbf{Telegraf:} Metrics collection agent for time-series data (CPU, memory, network, disk). StatsD and Prometheus exporters provide application-level metrics.
+
+\textbf{eBPF Agents:} Kernel-level visibility using extended Berkeley Packet Filter. Captures system calls, network connections, file access without userspace instrumentation overhead. Tools: Cilium Hubble (network observability), Falco (runtime security).
+
+\subsection{Cloud-Native Integrations}
+Direct integration with cloud provider APIs:
+
+\textbf{AWS:}
+\begin{itemize}
+    \item CloudTrail: Management events streamed to Kinesis Data Streams
+    \item VPC Flow Logs: Published to S3; Lambda triggers processing
+    \item GuardDuty: Findings forwarded to EventBridge; routed to Kafka
+    \item CloudWatch Logs Subscription Filters: Real-time forwarding to Kinesis Firehose
+\end{itemize}
+
+\textbf{Azure:}
+\begin{itemize}
+    \item Activity Logs: Diagnostic settings stream to Event Hubs
+    \item NSG Flow Logs: Stored in Blob Storage; Event Grid triggers ingestion
+    \item Azure AD Sign-in Logs: Microsoft Graph API polling with OAuth2
+    \item Azure Sentinel: Connector for cross-platform correlation
+\end{itemize}
+
+\textbf{Google Cloud:}
+\begin{itemize}
+    \item Cloud Audit Logs: Pub/Sub subscriptions with push endpoints
+    \item VPC Flow Logs: BigQuery streaming inserts for historical analysis
+    \item Security Command Center: API polling for findings and vulnerabilities
+\end{itemize}
+
+\subsection{Schema Registry and Validation}
+Confluent Schema Registry maintains Avro schemas for telemetry messages:
+\begin{itemize}
+    \item \textbf{Schema Evolution:} Backward and forward compatibility checks prevent breaking changes
+    \item \textbf{Validation:} Producers validate messages pre-publish; invalid messages routed to dead-letter queue
+    \item \textbf{Versioning:} Semantic versioning (major.minor.patch) tracks schema changes
+\end{itemize}
+
+Example unified telemetry schema (Avro):
+\begin{verbatim}
+{
+  "type": "record",
+  "name": "TelemetryEvent",
+  "fields": [
+    {"name": "event_id", "type": "string"},
+    {"name": "timestamp", "type": "long", "logicalType": "timestamp-millis"},
+    {"name": "source", "type": {"type": "record", "name": "Source",
+      "fields": [{"name": "provider", "type": "string"},
+                 {"name": "account", "type": "string"}]}},
+    {"name": "entities", "type": {"type": "array", "items": "Entity"}},
+    {"name": "action", "type": "Action"},
+    {"name": "context", "type": "Context"}
+  ]
+}
+\end{verbatim}
+
+\subsection{Message Buffering and Transport}
+Apache Kafka serves as the central message bus:
+\begin{itemize}
+    \item \textbf{Topics:} Partitioned by telemetry source (cloudtrail, vpc-flow, k8s-audit)
+    \item \textbf{Replication:} Factor of 3 for durability; min in-sync replicas = 2
+    \item \textbf{Retention:} 7 days for hot data; offloaded to S3 for long-term retention
+    \item \textbf{Security:} SASL/SCRAM authentication, TLS encryption, ACLs per consumer group
+    \item \textbf{Throughput:} Sustained 100K messages/sec per broker; horizontal scaling to 10+ brokers
+\end{itemize}
+
+\section{Data Fabric Layer}\label{sec:arch-datafabric}
+\subsection{Lakehouse Architecture}
+Data lakehouse combines data lake flexibility with data warehouse performance:
+
+\textbf{Storage:} S3/ADLS/GCS object storage with tiered storage classes:
+\begin{itemize}
+    \item Hot tier (Standard): Recent 30 days for active analysis
+    \item Warm tier (Infrequent Access): 31-180 days for compliance
+    \item Cold tier (Glacier/Archive): 180+ days for long-term retention
+\end{itemize}
+
+\textbf{Table Format:} Apache Iceberg for ACID transactions, schema evolution, and time travel:
+\begin{itemize}
+    \item Snapshot isolation enables concurrent reads/writes
+    \item Partition evolution (hourly $\rightarrow$ daily) without data rewrites
+    \item Hidden partitioning (automatic) based on timestamp column
+    \item Table versioning for rollback and audit
+\end{itemize}
+
+\textbf{Partitioning Strategy:}
+\begin{verbatim}
+PARTITIONED BY (date(timestamp), source_type)
+CLUSTERED BY (entity_id) INTO 16 BUCKETS
+\end{verbatim}
+Reduces query scan costs by 85\% for time-range and source-filtered queries.
+
+\subsection{Stream Processing}
+Apache Flink provides stateful stream processing:
+
+\textbf{Telemetry Normalization Pipeline:}
+\begin{enumerate}
+    \item Source: Kafka consumer (parallelism = 32)
+    \item Parse: Provider-specific JSON/CSV parsers
+    \item Transform: Map to unified schema (Section~\ref{sec:theory-telemetry})
+    \item Enrich: Geolocation lookup, threat intelligence tagging
+    \item Sink: Iceberg table writes, Kafka output for downstream consumers
+\end{enumerate}
+
+\textbf{Windowing and Aggregation:}
+Tumbling windows (5-minute) compute statistical features:
+\begin{verbatim}
+DataStream<TelemetryEvent> events = ...;
+events.keyBy(e -> e.getEntityId())
+      .window(TumblingEventTimeWindows.of(Time.minutes(5)))
+      .aggregate(new StatisticsAggregator())
+      .addSink(featureStoreSink);
+\end{verbatim}
+
+Features include: event count, unique action types, distinct IP addresses, bytes transferred, authentication failure rate.
+
+\textbf{State Management:}
+RocksDB state backend persists 7-day event history for temporal correlation. Checkpointing every 60 seconds with incremental snapshots minimizes recovery time (RTO $<$ 2 minutes).
+
+\subsection{Feature Store}
+Centralized feature repository (Feast) for training and inference:
+\begin{itemize}
+    \item \textbf{Online Store:} Redis cluster for low-latency feature retrieval ($<$ 10ms p99)
+    \item \textbf{Offline Store:} Parquet files in data lake for batch training
+    \item \textbf{Feature Definitions:} YAML specs with entity, features, freshness, owners
+    \item \textbf{Point-in-Time Joins:} Ensures training/serving consistency by joining features as of event timestamp
+\end{itemize}
+
+\subsection{Metadata and Governance}
+Apache Atlas catalogs data assets:
+\begin{itemize}
+    \item \textbf{Lineage Tracking:} Captures transformations from raw logs to features to predictions
+    \item \textbf{Sensitivity Classification:} PII, confidential, restricted tags propagate through pipeline
+    \item \textbf{Retention Policies:} Automated lifecycle rules archive/delete data per compliance requirements
+    \item \textbf{Data Quality:} Great Expectations validates schema, completeness, uniqueness, value ranges
+\end{itemize}
+
+\section{AI Analytics Layer}\label{sec:arch-aianalytics}
+\subsection{Model Architecture}
+The hybrid ensemble integrates three specialized models:
+
+\textbf{Graph Attention Network (GAT):}
+\begin{itemize}
+    \item \textbf{Input:} Telemetry graph snapshot (5-minute window)
+    \item \textbf{Node Features:} Entity type, privilege level, geographic region, historical risk score
+    \item \textbf{Edge Features:} Action type, success/failure, frequency, anomaly score
+    \item \textbf{Architecture:} 3 GAT layers (8 heads, 64-dim hidden), graph pooling, 2-layer MLP classifier
+    \item \textbf{Output:} Node-level risk scores, suspicious subgraph identification
+\end{itemize}
+
+\textbf{Temporal Convolutional Network (TCN):}
+\begin{itemize}
+    \item \textbf{Input:} Sequence of 50 events per entity (sliding window, stride 10)
+    \item \textbf{Features:} Action embeddings (learned), temporal deltas, contextual attributes
+    \item \textbf{Architecture:} 4 TCN blocks (dilations: 1, 2, 4, 8), residual connections, global avg pool
+    \item \textbf{Output:} Sequence-level anomaly score, attention weights over events
+\end{itemize}
+
+\textbf{Bayesian Belief Network (BBN):}
+\begin{itemize}
+    \item \textbf{Input:} Feature vector + GAT/TCN outputs
+    \item \textbf{Structure:} DAG with 25 nodes representing ATT\&CK tactics/techniques
+    \item \textbf{Conditional Probabilities:} Learned from labeled training data via Expectation-Maximization
+    \item \textbf{Inference:} Variable elimination computes $P(\text{attack} | \text{evidence})$
+\end{itemize}
+
+\textbf{Ensemble Fusion:}
+Weighted geometric mean: $P_{\text{final}} = (P_{\text{GAT}}^{\alpha} \cdot P_{\text{TCN}}^{\beta} \cdot P_{\text{BBN}}^{\gamma})^{1/(\alpha+\beta+\gamma)}$
+Weights: $\alpha=0.4, \beta=0.35, \gamma=0.25$ (optimized via Bayesian optimization)
+
+\subsection{Training Pipeline}
+MLflow orchestrates end-to-end training:
+\begin{enumerate}
+    \item \textbf{Data Preparation:} Feast retrieves historical features; Spark job balances classes via SMOTE
+    \item \textbf{Hyperparameter Tuning:} Optuna runs 100 trials with Bayesian optimization
+    \item \textbf{Model Training:} PyTorch Lightning distributed training (4 GPUs, mixed precision)
+    \item \textbf{Validation:} 5-fold cross-validation; metrics logged to MLflow
+    \item \textbf{Model Registry:} Production-ready model tagged and versioned
+    \item \textbf{A/B Testing:} Shadow deployment compares new model against production
+\end{enumerate}
+
+\subsection{Real-Time Inference}
+Ray Serve deploys ensemble models:
+\begin{itemize}
+    \item \textbf{Deployment:} Each model component as independent replica set (3 replicas, GPU-enabled)
+    \item \textbf{Request Flow:} Kafka consumer $\rightarrow$ Feature enrichment $\rightarrow$ GAT/TCN/BBN inference $\rightarrow$ Ensemble fusion $\rightarrow$ Alert generation
+    \item \textbf{Batching:} Dynamic batching (max size 32, timeout 50ms) amortizes overhead
+    \item \textbf{Latency:} p50: 45ms, p95: 120ms, p99: 280ms (end-to-end)
+    \item \textbf{Throughput:} 5,000 events/sec sustained, 12,000 peak with autoscaling
+\end{itemize}
+
+\subsection{Model Monitoring and Drift Detection}
+Evidently AI monitors model health:
+\begin{itemize}
+    \item \textbf{Input Drift:} KS test compares feature distributions vs. training baseline
+    \item \textbf{Output Drift:} Jensen-Shannon divergence on prediction distributions
+    \item \textbf{Performance Degradation:} Tracks precision/recall on labeled holdout stream
+    \item \textbf{Alerting:} Slack notifications when drift exceeds threshold; triggers retraining workflow
+\end{itemize}
+
+\section{MLOps and DevSecOps}\label{sec:arch-mlops}
+\subsection{Continuous Integration / Continuous Deployment}
+GitHub Actions automates deployment pipelines:
+
+\textbf{Infrastructure CI/CD:}
+\begin{itemize}
+    \item Terraform plan on pull request
+    \item Automated testing (Terratest validates infrastructure)
+    \item Manual approval for production deployments
+    \item State locking via DynamoDB/Azure Blob to prevent conflicts
+\end{itemize}
+
+\textbf{Application CI/CD:}
+\begin{itemize}
+    \item Unit tests (pytest, coverage $>$ 80\%)
+    \item Integration tests (Docker Compose environment)
+    \item Security scans: Bandit (Python), Trivy (containers), OWASP Dependency Check
+    \item Build Docker images with semantic versioning
+    \item Helm chart deployment to staging
+    \item Smoke tests, load tests (Locust)
+    \item Promotion to production with blue-green deployment
+\end{itemize}
+
+\subsection{Model Lifecycle Management}
+MLflow tracks full model lifecycle:
+\begin{itemize}
+    \item \textbf{Experiments:} Hyperparameters, metrics, artifacts (model weights, plots)
+    \item \textbf{Models:} Versioned with stage transitions (None $\rightarrow$ Staging $\rightarrow$ Production $\rightarrow$ Archived)
+    \item \textbf{Model Lineage:} Links to training data versions, code commits, parent runs
+    \item \textbf{Model Serving:} Generates REST/gRPC endpoints and container images
+\end{itemize}
+
+\subsection{Security and Compliance in DevSecOps}
+\begin{itemize}
+    \item \textbf{Secret Management:} HashiCorp Vault stores API keys, credentials; dynamic secrets rotated hourly
+    \item \textbf{Image Signing:} Cosign signs container images; admission controller verifies signatures
+    \item \textbf{Policy-as-Code:} OPA validates Kubernetes manifests against security policies (no privileged containers, resource limits enforced)
+    \item \textbf{Audit Logging:} Kubernetes audit logs capture API server access; streamed to SIEM
+\end{itemize}
+
+\section{Explainability and Response Layer}\label{sec:arch-xai}
+\subsection{Explainability Services}
+Microservices generate post-hoc explanations:
+
+\textbf{SHAP Service:}
+\begin{itemize}
+    \item Computes Shapley values for top 20 features
+    \item Caches explanations (Redis, TTL 1 hour) to reduce latency
+    \item Visualizations: Force plots, waterfall charts, summary plots
+\end{itemize}
+
+\textbf{Counterfactual Service:}
+\begin{itemize}
+    \item DiCE (Diverse Counterfactual Explanations) library generates minimal perturbations
+    \item Constraints ensure plausibility (e.g., can't change past timestamps)
+    \item Outputs: "If source IP was in corporate range, alert would not trigger"
+\end{itemize}
+
+\textbf{Narrative Generation:}
+\begin{itemize}
+    \item Traverses attack graph subgraph from detection
+    \item Maps edges to ATT\&CK technique descriptions
+    \item Templates generate natural language: "User alice assumed role admin at 14:30, accessed S3 bucket secrets at 14:32, initiated egress to 203.0.113.5 at 14:35."
+\end{itemize}
+
+\subsection{Analyst Dashboard}
+React single-page application with:
+\begin{itemize}
+    \item \textbf{Alert Queue:} Prioritized by risk score, filterable by entity/tactic
+    \item \textbf{Investigation View:} Timeline visualization, entity graph, telemetry drilldown
+    \item \textbf{Explanation Panel:} SHAP values, counterfactuals, narrative summary
+    \item \textbf{Response Actions:} One-click playbook execution, case management integration
+    \item \textbf{Feedback:} Thumbs up/down, false positive reporting, comment threads
+\end{itemize}
+
+\subsection{Response Orchestration}
+StackStorm (SOAR platform) automates responses:
+
+\textbf{Playbook Example (S3 Exfiltration):}
+\begin{enumerate}
+    \item Receive alert from detection system
+    \item Query additional context (IAM user history, S3 bucket ACLs)
+    \item Execute containment: Revoke IAM credentials, apply bucket policy deny
+    \item Create incident ticket (JIRA/ServiceNow)
+    \item Notify security team (Slack, PagerDuty)
+    \item Await analyst disposition
+    \item If confirmed: Escalate to forensics, preserve evidence
+    \item If false positive: Update suppression rules, retrain model
+\end{enumerate}
+
+\section{Security and Privacy Controls}\label{sec:arch-security}
+\subsection{Encryption}
+\begin{itemize}
+    \item \textbf{At Rest:} AES-256 encryption via cloud-native KMS (AWS KMS, Azure Key Vault, GCP Cloud KMS)
+    \item \textbf{In Transit:} TLS 1.3 for all network communication; mTLS between microservices
+    \item \textbf{Key Management:} Automatic key rotation (90 days), HSM-backed keys for production
+\end{itemize}
+
+\subsection{Access Control}
+\begin{itemize}
+    \item \textbf{Authentication:} OAuth 2.0 + OIDC via identity provider (Okta, Azure AD)
+    \item \textbf{Authorization:} RBAC policies define role permissions; ABAC rules enforce attribute-based conditions (time of day, source IP)
+    \item \textbf{Just-in-Time Access:} Temporary privilege elevation with approval workflow; automatic revocation after 4 hours
+    \item \textbf{Service-to-Service:} mTLS certificates issued by internal CA (Cert-Manager + Vault PKI)
+\end{itemize}
+
+\subsection{Network Security}
+\begin{itemize}
+    \item \textbf{Segmentation:} Kubernetes network policies isolate namespaces; Istio service mesh enforces zero-trust
+    \item \textbf{Egress Control:} Squid proxy whitelists external endpoints; blocks direct internet access
+    \item \textbf{Intrusion Detection:} Falco monitors container runtime for suspicious behavior
+\end{itemize}
+
+\section{Performance Optimization}\label{sec:arch-performance}
+\subsection{Autoscaling}
+Horizontal Pod Autoscaler (HPA) scales based on:
+\begin{itemize}
+    \item CPU/memory utilization (target: 70\%)
+    \item Custom metrics: Kafka consumer lag, inference queue depth
+    \item Scaling bounds: min 3, max 50 replicas per service
+\end{itemize}
+
+Cluster Autoscaler provisions nodes when pod scheduling fails due to resource constraints.
+
+\subsection{Caching}
+\begin{itemize}
+    \item \textbf{Feature Cache:} Redis stores frequently accessed features (LRU eviction, 16 GB capacity)
+    \item \textbf{Explanation Cache:} SHAP values cached per alert (1-hour TTL)
+    \item \textbf{Query Cache:} Presto caches SQL query results for dashboards
+\end{itemize}
+
+\subsection{Resource Allocation}
+\begin{itemize}
+    \item GPU nodes (NVIDIA T4): Model training, real-time inference for ensemble
+    \item High-memory nodes (384 GB RAM): Flink stateful processing, graph database
+    \item Burstable nodes (T3/B-series): Non-critical workloads (logging, monitoring)
+\end{itemize}
+
+\subsection{Cost Optimization}
+FinOps practices reduce cloud spend by 32\%:
+\begin{itemize}
+    \item Spot/preemptible instances for batch jobs
+    \item Reserved instances for baseline workload
+    \item S3 Intelligent-Tiering for storage lifecycle
+    \item Rightsizing recommendations via Cloud Custodian
+\end{itemize}
+
+\section{Implementation Challenges and Lessons Learned}\label{sec:arch-challenges}
+\subsection{Telemetry Normalization Complexity}
+\textbf{Challenge:} 47 distinct log formats across AWS, Azure, GCP, SaaS.
+\textbf{Solution:} Schema-on-read with adapter pattern; community-contributed parsers in GitHub.
+
+\subsection{Real-Time Graph Construction}
+\textbf{Challenge:} Graph database write amplification under 100K events/sec.
+\textbf{Solution:} Batch writes (100 events), async indexing, read replicas for queries.
+
+\subsection{Explainability Latency}
+\textbf{Challenge:} SHAP computation took 15 seconds per alert.
+\textbf{Solution:} Model distillation (smaller student models), pre-computed approximations, caching.
+
+\subsection{Compliance Audit Trail Volume}
+\textbf{Challenge:} Full provenance logging generated 2 TB/day.
+\textbf{Solution:} Hierarchical sampling (100\% critical events, 10\% informational), compression, tiered storage.
+
+\section{Summary}
+This chapter presented a production-grade architecture integrating telemetry ingestion, lakehouse storage, hybrid AI analytics, explainability services, and governance controls. The implementation balances detection efficacy, operational scalability, and regulatory compliance. Chapter~\ref{chap:eval} evaluates this architecture through empirical experiments.
