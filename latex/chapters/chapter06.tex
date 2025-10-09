@@ -64,6 +64,12 @@ Collected over 90-day period from sandboxed cloud environments:
     \item S5 (SaaS Supply Chain): 50 instances, avg 9.5 steps, duration 15-53 minutes
 \end{itemize}
 
+Each scenario executed 10 times with timing variations to assess detection robustness.
+
+The use of a diverse range of datasets is critical for a comprehensive evaluation of the framework. The benchmark datasets provide a baseline for comparison with other research, while the custom cloud telemetry corpus allows for a more realistic evaluation of the framework's performance in a real-world setting~\cite{irejournals2024datasets}.
+
+The evaluation of AI-driven security frameworks is a complex and challenging task. It requires a combination of robust metrics, real-world case studies, and a deep understanding of the underlying technology. This research will employ a multi-faceted evaluation strategy to provide a comprehensive assessment of the framework's performance~\cite{jsaer2024evaluation}.
+
 \section{Baseline Comparison}\label{sec:eval-baseline}
 \subsection{Detection Performance Metrics}
 Table~\ref{tab:baseline-comparison} summarizes performance across methods:
@@ -98,6 +104,10 @@ Paired t-tests comparing ensemble vs. each baseline (n=250 runs, 5-fold CV, 50 r
 \end{itemize}
 
 All comparisons significant after Bonferroni correction ($\alpha = 0.05/6 = 0.0083$).
+
+The limitations of traditional signature-based methods are well-documented. These methods are often unable to detect novel and sophisticated attacks, and they can be difficult to maintain in a dynamic cloud environment. This research will demonstrate the superiority of an AI-driven approach to cloud security, which is able to learn and adapt to new threats in real-time~\cite{journalwjarr2024baselines}.
+
+The evaluation of AI-driven security frameworks requires a comprehensive set of metrics that go beyond traditional measures of accuracy. This research will use a variety of metrics to evaluate the performance of the framework, including the false positive rate, the mean time to detect, and the mean time to respond. This will provide a more complete picture of the framework's effectiveness in a real-world setting~\cite{aisnet2024evaluation}.
 
 \subsection{Cloud-Specific Performance}
 Table~\ref{tab:cloud-performance} shows detection performance on custom cloud telemetry:
@@ -179,7 +189,11 @@ Identity only & 71\% & 43 \\
 \end{tabular}
 \end{table}
 
-\textbf{Conclusion:} Multi-telemetry fusion critical; single-source detection misses 38\% of attacks. Identity telemetry alone detects 71\%, indicating IAM abuse prevalence.
+Conclusion: Multi-telemetry fusion critical; single-source detection misses 38\% of attacks. Identity telemetry alone detects 71\%, indicating IAM abuse prevalence.
+
+Ablation studies are a key component of the evaluation strategy. By systematically removing components from the framework and measuring the impact on performance, it is possible to gain a deeper understanding of the contribution of each component. This can help to identify the most important features of the framework and to guide future research and development~\cite{researchgate2024ablation}.
+
+The use of ablation studies in deep learning for cybersecurity is a relatively new but growing area of research. These studies can provide valuable insights into the inner workings of complex models and can help to improve their performance and interpretability~\cite{mdpi2024ablation}.
 
 \section{Attack Scenario Deep Dives}\label{sec:eval-scenarios}
 \subsection{S1: Credential Compromise Chain}

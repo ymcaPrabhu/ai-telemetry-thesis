@@ -20,6 +20,10 @@ Kubernetes network policies and service mesh architectures (Istio, Linkerd, Cons
 \subsection{Hybrid and Multi-Cloud Complexity}
 Enterprise cloud adoption increasingly follows hybrid and multi-cloud strategies, distributing workloads across on-premises data centers, public clouds, and edge infrastructure~\cite{gartner2023hybrid}. This architectural heterogeneity complicates security monitoring; organizations must correlate telemetry from disparate management planes, identity providers, and network fabrics. Research by Opara-Martins et al.~\cite{oparamartins2016multicloud} identifies visibility gaps, inconsistent security controls, and operational fragmentation as primary barriers to effective multi-cloud security governance.
 
+A recent trend in cloud security architecture is the adoption of a Cybersecurity Mesh Architecture (CSMA). CSMA is a composable approach that decouples policy from enforcement, allowing for a more flexible and scalable security posture. It provides a distributed security architecture that can be applied to assets across a variety of environments, including on-premises, cloud, and edge~\cite{eviden2024trends}. This approach is well-suited to the challenges of multi-cloud and hybrid environments, as it allows for the creation of a unified security plane across disparate environments.
+
+The convergence of cloud security and Secure Access Service Edge (SASE) is another significant trend. SASE combines network security functions (such as SWG, CASB, FWaaS and ZTNA) with WAN capabilities (i.e., SDWAN) to support the dynamic secure access needs of organizations. This approach is designed to provide secure and seamless access to cloud services from any location, on any device~\cite{cloudwize2024sase}. The adoption of SASE is driven by the increasing number of remote workers and the growing use of cloud-based applications.
+
 \section{Telemetry Sources and Observability}\label{sec:lit-telemetry}
 \subsection{Network and Infrastructure Telemetry}
 Network telemetry constitutes the foundational layer of cloud visibility. VPC Flow Logs capture IP traffic metadata (source/destination addresses, ports, protocols, packet counts) at the virtual network interface level~\cite{awscloudtrail2023}. Research by Sperotto et al.~\cite{sperotto2010netflow} established NetFlow/IPFIX as standard protocols for flow-based monitoring, though cloud providers implement proprietary variants with differing sampling rates and retention policies.
@@ -38,6 +42,10 @@ Serverless platforms (AWS Lambda, Azure Functions, Google Cloud Functions) gener
 
 \subsection{Observability Challenges and Standardization Efforts}
 Heterogeneous telemetry formats impede cross-platform correlation. AWS CloudTrail emits JSON with AWS-specific schemas, Azure Activity Logs use proprietary formats, and Kubernetes audit events follow native Kubernetes API conventions. Standardization initiatives include OpenTelemetry for traces/metrics, STIX/TAXII for threat intelligence, and OCSF (Open Cybersecurity Schema Framework) for security telemetry~\cite{ocsf2023}. However, adoption remains fragmented, and semantic interoperability (mapping equivalent concepts across providers) requires custom transformation logic.
+
+A key trend in cloud telemetry is the move towards unified observability. This approach seeks to break down the silos between logs, metrics, and traces, providing a single, integrated view of the entire system. This allows for more effective correlation of data from different sources, and provides a more complete picture of the health and security of the system~\cite{kloudmate2024observability}. The adoption of unified observability is driven by the increasing complexity of cloud-native applications, which often consist of hundreds or even thousands of microservices.
+
+The OpenTelemetry project is a key enabler of unified observability. It provides a set of open standards and tools for collecting, processing, and exporting telemetry data. By standardizing on OpenTelemetry, organizations can avoid vendor lock-in and build a more flexible and interoperable observability platform~\cite{chronosphere2024opentelemetry}. The project has gained significant traction in the industry, with support from all major cloud providers and observability vendors.
 
 \section{AI and Machine Learning for Intrusion Detection}\label{sec:lit-aiml}
 \subsection{Evolution from Signature to Machine Learning-Based Detection}
@@ -76,6 +84,10 @@ Existing intrusion detection benchmarks (KDD Cup, NSL-KDD, CICIDS, UNSW-NB15) pr
 
 The absence of comprehensive multi-telemetry cloud attack datasets represents a significant research gap, hindering reproducible evaluation and comparative analysis.
 
+Recent research has shown that Long Short-Term Memory (LSTM) models can be particularly effective for intrusion detection, with some studies achieving accuracy rates as high as 98.3% with a low false positive rate~\cite{mdpi2024lstm}. This is due to their ability to learn and remember long-term dependencies in sequential data, which is a key characteristic of many cyber attacks. However, the effectiveness of these models is highly dependent on the quality and representativeness of the training data.
+
+Despite the promise of AI for intrusion detection, the threat of adversarial attacks against the AI models themselves is a growing concern. Adversarial attacks involve an attacker manipulating the input data to an AI model in order to cause it to make a mistake. This can be used to evade detection or to cause the model to generate false alarms. A survey of adversarial attacks and defenses for deep learning-based intrusion detection systems highlights the need for more robust and resilient AI models~\cite{ijisae2024adversarial}.
+
 \section{Multi-Telemetry Fusion Techniques}\label{sec:lit-fusion}
 \subsection{SIEM and XDR Platforms}
 Security Information and Event Management (SIEM) systems emerged in the early 2000s to centralize log collection and correlation. Commercial platforms (Splunk, IBM QRadar, Microsoft Sentinel, Google Chronicle) ingest telemetry from diverse sources, apply rule-based correlation, and generate alerts. Studies identify limitations including rule brittleness, scalability bottlenecks, high false positive rates, and limited contextual enrichment~\cite{axelsson2000fprates,elshoush2011siemsurvey}.
@@ -85,14 +97,30 @@ Extended Detection and Response (XDR) platforms integrate telemetry from endpoin
 \subsection{Complex Event Processing and Attack Graphs}
 Complex Event Processing (CEP) frameworks enable temporal pattern matching over event streams~\cite{luckham2012cep,albanese2017cep}. Attack graph models formalize intrusion paths; MITRE developed ThreatGraph to represent ATT\&CK relationships~\cite{mitrethreatgraph2023}. Academic proposals include probabilistic attack graphs and Bayesian networks for alert aggregation. However, cloud-specific attack graphs incorporating IAM relationships, API call sequences, and serverless event chains remain under-researched.
 
+Kalman filtering and other probabilistic methods have been successfully applied to sensor fusion problems in other domains, and there is a growing body of research exploring their application to cybersecurity~\cite{ias2024kalman}. These methods are well-suited to handling the uncertainty and noise that is inherent in telemetry data. However, they can be computationally expensive, and their effectiveness is dependent on the accuracy of the underlying models.
+
+The use of neural networks for multi-modal data fusion is another promising area of research. Convolutional Neural Networks (CNNs), Recurrent Neural Networks (RNNs), and Graph Neural Networks (GNNs) have all been used to fuse data from different sources and to learn complex patterns that are indicative of malicious activity~\cite{whiterose2024nnfusion}. However, these models can be difficult to interpret, and their effectiveness is highly dependent on the quality and quantity of the training data.
+
 \section{Big Data and Stream Processing Frameworks}
 Scalable telemetry processing leverages Kafka, Flink, Spark, and cloud-native services such as Kinesis and Event Hub~\cite{zaharia2016apache,balaji2021flink}. Research on ML systems optimized for streaming and large-scale inference informs architecture decisions in this thesis~\cite{palkar2018weld}.
+
+The use of Apache Flink and Kafka for building real-time data pipelines is a common pattern in modern cybersecurity architectures. These technologies allow for the ingestion, processing, and analysis of high-volume, high-velocity data streams in real-time, which is essential for detecting and responding to threats as they happen~\cite{confluent2024streaming}. The ability to perform stateful stream processing is particularly important, as it allows for the creation of more sophisticated detection logic that can track the state of entities and relationships over time.
+
+Real-time data enrichment is another critical component of modern stream processing architectures for cybersecurity. This involves enriching the raw telemetry data with additional context, such as user behavior profiles, threat intelligence, and asset information. This additional context can significantly improve the accuracy of detection models and reduce the number of false positives~\cite{risingwave2024enrichment}. The ability to perform this enrichment in real-time, as the data is being processed, is a key advantage of stream processing frameworks.
 
 \section{Benchmark Case Studies}
 Top-tier laboratories---MIT CSAIL, Oxford Cybersecurity Centre, Carnegie Mellon CyLab, Stanford AI Security Lab, and Imperial College London---demonstrate interdisciplinary approaches combining technical, policy, and human-factor perspectives~\cite{mitcsail2023,oxfordcyber2022,cylab2021}. Their methodologies inform the integration of compliance and usability into the framework.
 
+The Cloud Security Alliance (CSA) regularly publishes reports on the top threats to cloud computing. Their 2024 report highlights the continued prevalence of misconfigurations, identity and access management weaknesses, and insecure interfaces as the top threats~\cite{csa2024topthreats}. These reports provide valuable insights into the real-world challenges that cloud security solutions need to address.
+
+The Orca Security 2024 State of Cloud Security Report provides a detailed analysis of the security posture of thousands of cloud environments. The report found that a significant number of organizations are still struggling with basic security hygiene, such as securing public-facing assets and implementing multi-factor authentication~\cite{orca2024casestudy}. These findings underscore the need for security solutions that are not only effective but also easy to use and manage.
+
 \section{Regulatory and Compliance Standards}
 Regulations including GDPR, HIPAA, PCI DSS, EU NIS2, US FedRAMP, CERT-In directives, and MeitY cloud guidelines impose stringent requirements on logging, breach notification, and data governance~\cite{gdpr2016,hipaa2013,nis22022,fedramp2023,certin2022directive,meity2017cloud}. Few studies comprehensively map detection outputs to compliance obligations, revealing an important research gap.
+
+The shared responsibility model is a key concept in cloud security. It defines the division of security responsibilities between the cloud provider and the customer. While the cloud provider is responsible for the security *of* the cloud, the customer is responsible for security *in* the cloud. This includes configuring and securing their own data, applications, and access policies~\cite{crowdstrike2024shared}. A lack of understanding of the shared responsibility model is a common cause of cloud security failures.
+
+Continuous monitoring and auditing are essential for maintaining compliance in a dynamic cloud environment. This involves regularly assessing the security posture of the cloud environment, identifying and remediating vulnerabilities, and collecting and analyzing logs to detect and respond to threats~\cite{hyperglance2024monitoring}. The use of automated tools for continuous monitoring and auditing is becoming increasingly important, as manual processes are often too slow and error-prone to be effective.
 
 \section{Research Gap Analysis}\label{sec:lit-gaps}
 Synthesis of the literature reveals seven critical gaps:

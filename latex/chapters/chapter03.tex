@@ -36,6 +36,10 @@ In cloud environments, attack graph nodes correspond to compromised identities, 
 
 Temporal constraints capture time-ordered attack sequences. A multi-stage attack $A = \{a_1, a_2, \ldots, a_n\}$ satisfies temporal causality if $\forall i < j: t(a_i) < t(a_j)$ where $t(a_i)$ denotes the timestamp of attack step $a_i$. The framework employs sliding time windows (e.g., 1-hour correlation windows) to balance detection latency and false positive suppression.
 
+While the Cyber Kill Chain provides a useful high-level model, its linear nature has been criticized for oversimplifying the complex, non-linear attack paths common in cloud environments~\cite{xcitium2024killchain}. Adversaries often move laterally between services, escalate privileges opportunistically, and may not follow a predictable sequence of steps. The MITRE ATT&CK framework addresses this limitation by providing a more flexible and comprehensive knowledge base of adversary tactics and techniques, without prescribing a rigid order of operations.
+
+This research therefore adopts a hybrid approach, using the Cyber Kill Chain as a high-level model for understanding the overall goals of an attack, while leveraging the MITRE ATT&CK framework to identify the specific techniques used at each stage. This allows for a more nuanced and realistic model of adversary behavior in the cloud~\cite{exabeam2024attack}.
+
 \section{Telemetry Taxonomy}\label{sec:theory-telemetry}
 \subsection{Multi-Dimensional Telemetry Classification}
 Cloud telemetry exhibits heterogeneity across four primary dimensions:
@@ -113,6 +117,10 @@ Not all telemetry sources exhibit equal reliability. VPC Flow Logs may sample tr
 
 Detection algorithms weigh evidence by confidence: high-confidence telemetry (CloudTrail API logs) receives greater weight than low-confidence signals (sampled flow logs).
 
+The adoption of a standardized telemetry schema, such as OpenTelemetry, is a key enabler of the unified telemetry model. By providing a common language for describing telemetry data, OpenTelemetry facilitates the correlation of data from different sources and reduces the need for custom transformation logic~\cite{opentelemetry2024schema}. This research will leverage the OpenTelemetry standard to the greatest extent possible, while also developing custom extensions to handle cloud-specific telemetry sources that are not yet covered by the standard.
+
+A well-defined data taxonomy is also essential for achieving comprehensive software lifecycle telemetry. This involves not only collecting data from different sources, but also organizing it in a way that is meaningful and actionable. By creating a clear mapping between telemetry data and the different stages of the software lifecycle, it is possible to gain a more holistic view of the health and security of the system~\cite{gathr2024taxonomy}.
+
 \section{AI and Machine Learning Foundations}\label{sec:theory-ai}
 \subsection{Graph Neural Networks for Entity Reasoning}
 Graph neural networks (GNNs) operate on graph-structured data, making them naturally suited to the unified telemetry model. A GNN iteratively updates node representations by aggregating information from neighboring nodes:
@@ -160,6 +168,10 @@ The framework employs a hybrid ensemble integrating:
 
 Ensemble outputs are fused through weighted voting or meta-learning. This architecture balances detection accuracy (neural networks) with interpretability (symbolic rules).
 
+The use of Graph Neural Networks (GNNs) is particularly well-suited to the problem of cloud security, due to their ability to model the complex relationships between entities in a cloud environment. By representing cloud resources, users, and their interactions as a graph, GNNs can learn to identify suspicious patterns of activity that would be difficult to detect with traditional methods~\cite{rademics2024gnn}. This research will explore the use of GNNs for a variety of cloud security use cases, including intrusion detection, vulnerability analysis, and compliance monitoring.
+
+However, the use of AI in security is not without its challenges. One of the most significant is the threat of adversarial attacks, where an attacker manipulates the input to an AI model in order to cause it to make a mistake. This research will investigate the use of adversarial training and other techniques to build AI models that are more robust and resilient to these types of attacks~\cite{mdpi2024adversarial}.
+
 \section{Explainability and Human-Centered AI}\label{sec:theory-xai}
 \subsection{Explainable AI Principles}
 The DARPA XAI program~\cite{darpa2020xai} emphasizes that ML systems must produce explanations enabling users to understand, trust, and manage AI-driven decisions. The EU AI Act mandates transparency for high-risk AI systems~\cite{euaiact2023}. In cybersecurity, explainability serves multiple stakeholders:
@@ -195,6 +207,10 @@ The framework generates natural language attack narratives by traversing detecte
 
 Narratives contextualize detections, accelerating analyst triage and decision-making.
 
+The use of LIME and SHAP are critical for providing both local and global explanations of model behavior. Local explanations help analysts understand why a specific alert was generated, while global explanations provide insights into the overall behavior of the model~\cite{rackenzik2024xai}. This is essential for building trust and confidence in the system, and for enabling analysts to identify and correct for biases in the model.
+
+Ultimately, the goal of XAI in cybersecurity is to create a human-in-the-loop system where the AI and the human analyst work together to achieve a level of performance that neither could achieve on their own. This requires not only developing explainable AI models, but also designing user interfaces and workflows that are optimized for human-AI collaboration~\cite{frontiersin2024humanloop}.
+
 \section{Compliance and Governance Foundations}\label{sec:theory-compliance}
 \subsection{Policy-as-Code}
 Policy-as-code frameworks (Open Policy Agent~\cite{openpolicyagent2023}, AWS Config Rules, Azure Policy) express regulatory and organizational requirements as declarative rules. Example OPA policy:
@@ -229,6 +245,10 @@ Forensic analysis and regulatory audits require complete event provenance. The f
 \end{itemize}
 
 Cryptographic hashing and immutable storage (e.g., append-only logs, blockchain-based audit trails) prevent tampering.
+
+The Open Policy Agent (OPA) is a powerful tool for implementing Policy as Code. It provides a declarative language for expressing policies and a general-purpose policy engine that can be integrated into a variety of systems. This allows for the centralization of policy definition and enforcement, which is essential for maintaining a consistent security posture across a multi-cloud environment~\cite{firefly2024opa}.
+
+However, automating compliance in a multi-cloud environment is not without its challenges. Each cloud provider has its own unique set of APIs and services, which can make it difficult to implement a consistent set of policies across all environments. This research will explore the use of abstraction layers and other techniques to address these challenges and to enable the creation of a truly cloud-agnostic compliance framework~\cite{puppet2024multicloud}.
 
 \section{Unified Conceptual Architecture}\label{sec:theory-arch}
 The conceptual architecture integrates theoretical constructs into a layered system design (Figure~\ref{fig:concept-arch}):

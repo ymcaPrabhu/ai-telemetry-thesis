@@ -24,6 +24,10 @@ The framework follows a layered microservices architecture aligned with IEEE 147
 
 The architecture is cloud-agnostic, deployed on Kubernetes with infrastructure-as-code (Terraform) for reproducibility across AWS, Azure, and GCP.
 
+The Cloud Security Alliance (CSA) Enterprise Architecture (EA) provides a comprehensive set of guidelines and a reference model for designing and implementing a secure cloud environment. The CSA EA is based on industry standards such as TOGAF and ITIL, and it provides a holistic approach to cloud security that covers all aspects of the cloud stack, from the physical infrastructure to the application layer~\cite{csa2024ea}.
+
+The AWS Security Reference Architecture (SRA) is another valuable resource for designing and implementing a secure cloud environment. The AWS SRA provides a set of prescriptive guidelines and best practices for deploying AWS security services in a multi-account environment. The SRA is aligned with the AWS Well-Architected Framework, and it provides a comprehensive approach to cloud security that covers all aspects of the AWS platform~\cite{aws2024sra}.
+
 \section{Telemetry Ingestion Layer}\label{sec:arch-ingestion}
 \subsection{Agent-Based Collection}
 Lightweight agents deployed on compute instances and containers collect telemetry at source:
@@ -90,6 +94,10 @@ Example unified telemetry schema (Avro):
   ]
 }
 \end{verbatim}
+
+Data quality and integrity are critical for effective telemetry ingestion. This research will employ a variety of techniques to ensure the quality and integrity of the data, including data cleansing, validation, and enrichment~\cite{siffletdata2024quality}. Automated schema monitoring will be used to detect changes in data sources and to ensure that the data is processed correctly.
+
+The use of a flexible and scalable ingestion pipeline is another key aspect of the telemetry ingestion layer. The pipeline will be designed to handle a wide variety of data sources and formats, and it will be able to scale to meet the demands of a large and complex cloud environment~\cite{apica2024schema}. The pipeline will also be designed to be resilient to failures, with built-in error handling and retry mechanisms.
 
 \subsection{Message Buffering and Transport}
 Apache Kafka serves as the central message bus:
@@ -169,8 +177,12 @@ Apache Atlas catalogs data assets:
     \item \textbf{Lineage Tracking:} Captures transformations from raw logs to features to predictions
     \item \textbf{Sensitivity Classification:} PII, confidential, restricted tags propagate through pipeline
     \item \textbf{Retention Policies:} Automated lifecycle rules archive/delete data per compliance requirements
-    \item \textbf{Data Quality:} Great Expectations validates schema, completeness, uniqueness, value ranges
+Data Quality: Great Expectations validates schema, completeness, uniqueness, value ranges
 \end{itemize}
+
+A data fabric for security analytics provides a unified and consistent view of security data from a variety of sources. This is in contrast to traditional SIEMs, which often store data in a raw, unstructured format. The data fabric approach allows for the creation of a more curated and analysis-ready dataset, which can significantly improve the efficiency and effectiveness of security analytics~\cite{zscaler2024fabric}.
+
+By providing a single, unified view of security data, a data fabric can also help to break down the silos that often exist between different security teams. This can lead to improved collaboration and a more holistic approach to security. The data fabric can also help to reduce the time and effort required to onboard new data sources, as the data is automatically normalized and enriched as it is ingested~\cite{databee2024siem}.
 
 \section{AI Analytics Layer}\label{sec:arch-aianalytics}
 \subsection{Model Architecture}
@@ -235,6 +247,10 @@ Evidently AI monitors model health:
     \item \textbf{Alerting:} Slack notifications when drift exceeds threshold; triggers retraining workflow
 \end{itemize}
 
+The use of AI for anomaly detection is a key component of the AI analytics layer. By learning the normal behavior of the system, AI models can identify unusual patterns of activity that may be indicative of a security threat. This approach is particularly well-suited to cloud environments, where the dynamic and ephemeral nature of the infrastructure can make it difficult to define a baseline of normal behavior~\cite{paloaltonetworks2024anomaly}.
+
+The integration of AI with a Zero-Trust architecture is another important aspect of the AI analytics layer. By continuously validating user and device identity, a Zero-Trust architecture can provide the context that is needed to make more accurate and timely security decisions. This is particularly important in a cloud environment, where the traditional network perimeter has been dissolved~\cite{esrgroups2024zero}.
+
 \section{MLOps and DevSecOps}\label{sec:arch-mlops}
 \subsection{Continuous Integration / Continuous Deployment}
 GitHub Actions automates deployment pipelines:
@@ -274,6 +290,10 @@ MLflow tracks full model lifecycle:
     \item \textbf{Policy-as-Code:} OPA validates Kubernetes manifests against security policies (no privileged containers, resource limits enforced)
     \item \textbf{Audit Logging:} Kubernetes audit logs capture API server access; streamed to SIEM
 \end{itemize}
+
+MLOps is a critical component of the AI analytics layer. It provides the tools and processes that are needed to manage the lifecycle of the AI models, from development and training to deployment and monitoring. This is particularly important in a cybersecurity context, where the models need to be constantly updated to keep pace with the evolving threat landscape~\cite{ibm2024mlops}.
+
+The integration of security into the MLOps pipeline, also known as MLSecOps, is another important aspect of the architecture. This involves incorporating security controls and best practices into every stage of the model lifecycle, from data ingestion and preprocessing to model training and deployment. This helps to ensure that the AI models are not only effective but also secure~\cite{mlsecops2024}.
 
 \section{Explainability and Response Layer}\label{sec:arch-xai}
 \subsection{Explainability Services}
@@ -325,6 +345,10 @@ StackStorm (SOAR platform) automates responses:
     \item If false positive: Update suppression rules, retrain model
 \end{enumerate}
 
+The use of XAI for incident response is a key feature of the explainability and response layer. By providing clear and concise explanations for its decisions, the AI system can help security analysts to quickly understand the nature of a threat and to take the appropriate action~\cite{aithority2024xai}. This can significantly reduce the mean time to respond (MTTR) to security incidents and improve the overall effectiveness of the security operations center (SOC).
+
+In addition to providing explanations, the XAI system can also be used to generate recommendations for remediation. For example, if the system detects a misconfiguration in a cloud resource, it can recommend the specific steps that need to be taken to fix the problem. This can help to automate the incident response process and to reduce the workload on security analysts~\cite{rocheston2024incident}.
+
 \section{Security and Privacy Controls}\label{sec:arch-security}
 \subsection{Encryption}
 \begin{itemize}
@@ -345,8 +369,12 @@ StackStorm (SOAR platform) automates responses:
 \begin{itemize}
     \item \textbf{Segmentation:} Kubernetes network policies isolate namespaces; Istio service mesh enforces zero-trust
     \item \textbf{Egress Control:} Squid proxy whitelists external endpoints; blocks direct internet access
-    \item \textbf{Intrusion Detection:} Falco monitors container runtime for suspicious behavior
+Intrusion Detection: Falco monitors container runtime for suspicious behavior
 \end{itemize}
+
+The use of multi-factor authentication (MFA) and role-based access controls (RBAC) are essential for securing access to cloud resources. MFA provides an additional layer of security by requiring users to provide two or more forms of identification before they are granted access. RBAC helps to ensure that users only have access to the resources that they need to do their jobs~\cite{checkpoint2024mfa}.
+
+Encryption of data at rest and in transit is another critical security control. Encryption helps to protect data from unauthorized access, even if the underlying storage or network is compromised. This research will use a variety of encryption technologies, including TLS 1.3 for data in transit and AES-256 for data at rest~\cite{hivenet2024encryption}.
 
 \section{Performance Optimization}\label{sec:arch-performance}
 \subsection{Autoscaling}
@@ -382,6 +410,10 @@ FinOps practices reduce cloud spend by 32\%:
     \item Rightsizing recommendations via Cloud Custodian
 \end{itemize}
 
+The de-siloing of data is a key aspect of performance optimization. By ingesting and analyzing data from a variety of sources in a centralized location, it is possible to gain a more holistic view of the security posture of the system. This can help to identify and address security risks that would be difficult to detect with a more siloed approach~\cite{chaossearch2024desilo}.
+
+Optimizing the cost of security analytics is another important consideration. This can be achieved by simplifying the ingestion, storage, and analytics architectures, and by using a variety of cost-saving measures, such as spot instances and reserved instances. This research will explore a variety of techniques for optimizing the cost of security analytics, without compromising on the effectiveness of the system~\cite{dremio2024optimization}.
+
 \section{Implementation Challenges and Lessons Learned}\label{sec:arch-challenges}
 \subsection{Telemetry Normalization Complexity}
 \textbf{Challenge:} 47 distinct log formats across AWS, Azure, GCP, SaaS.
@@ -398,6 +430,10 @@ FinOps practices reduce cloud spend by 32\%:
 \subsection{Compliance Audit Trail Volume}
 \textbf{Challenge:} Full provenance logging generated 2 TB/day.
 \textbf{Solution:} Hierarchical sampling (100\% critical events, 10\% informational), compression, tiered storage.
+
+One of the biggest challenges in implementing a cloud security solution is managing the complexity of a multi-cloud environment. Each cloud provider has its own unique set of services and APIs, which can make it difficult to implement a consistent set of security controls across all environments. This research will address this challenge by using a cloud-agnostic architecture and by leveraging open standards and tools wherever possible~\cite{spot2024multicloud}.
+
+Another significant challenge is the lack of visibility into cloud environments. The dynamic and ephemeral nature of cloud resources can make it difficult to track and monitor all of the activity that is taking place. This research will address this challenge by using a variety of telemetry sources and by employing advanced analytics to identify suspicious activity~\cite{cycognito2024visibility}.
 
 \section{Summary}
 This chapter presented a production-grade architecture integrating telemetry ingestion, lakehouse storage, hybrid AI analytics, explainability services, and governance controls. The implementation balances detection efficacy, operational scalability, and regulatory compliance. Chapter~\ref{chap:eval} evaluates this architecture through empirical experiments.

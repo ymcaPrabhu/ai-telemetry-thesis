@@ -39,6 +39,10 @@ The research integrates quantitative and qualitative methods:
 
 Triangulation across methods strengthens validity; convergent findings across quantitative benchmarks and qualitative feedback increase confidence in conclusions.
 
+The application of Design Science Research (DSR) in cybersecurity provides a structured approach to developing and evaluating the framework as a novel artifact. This research follows the DSR methodology to ensure that the proposed solution is not only theoretically sound but also practically relevant and useful~\cite{bampel2024dsr}. The DSR process model, which includes the stages of problem identification, solution design, development, evaluation, and communication, provides a roadmap for the research and ensures that the final artifact is a valuable contribution to the field.
+
+A mixed-methods approach, combining quantitative and qualitative data, is essential for a comprehensive evaluation of the framework. The quantitative data provides objective measures of performance, while the qualitative data provides insights into the user experience and the practical challenges of implementing the framework in a real-world setting~\cite{semanticscholar2024mixedmethods}. This approach allows for a more holistic understanding of the framework's strengths and weaknesses, and provides a more complete picture of its overall effectiveness.
+
 \section{Data Collection}\label{sec:method-data}
 \subsection{Synthetic Intrusion Datasets}
 Public benchmark datasets establish baseline comparisons:
@@ -124,6 +128,10 @@ Qualitative data gathered through structured studies:
 
 Sessions recorded (with consent) and transcribed. Thematic analysis identified recurring themes regarding explanation utility, information overload, and workflow integration.
 
+The collection of data in a cloud environment presents a unique set of challenges, due to the distributed nature of the infrastructure and the use of multiple service models. This research will employ a variety of data collection methods, including the use of cloud provider APIs, the deployment of custom agents, and the use of third-party tools~\cite{salvationdata2024datacollection}. A key consideration in the data collection process is the shared responsibility model, which defines the division of security responsibilities between the cloud provider and the customer. This research will focus on collecting data from the customer side of the shared responsibility model, while also leveraging the security services and telemetry provided by the cloud provider.
+
+Given the sensitivity of the data being collected, a strong focus will be placed on data protection and privacy. All data will be encrypted at rest and in transit, and access to the data will be strictly controlled. The principle of data minimization will be followed, ensuring that only the data that is necessary for the research is collected and stored~\cite{commvault2024sharedresponsibility}. All data will be anonymized to the greatest extent possible, and any remaining personally identifiable information (PII) will be handled in accordance with the General Data Protection Regulation (GDPR) and other relevant privacy regulations.
+
 \section{Governance and Ethics}\label{sec:method-ethics}
 \subsection{Institutional Ethics Compliance}
 Research protocol submitted to Institutional Ethics Committee (IEC) addressing:
@@ -172,6 +180,10 @@ Adversary emulation conducted under strict controls:
 \end{itemize}
 
 No actual exploitation of external systems; all attacks confined to researcher-controlled infrastructure.
+
+The use of AI in security research raises a number of ethical concerns, including the potential for bias in the AI models, the lack of transparency in their decision-making, and the potential for misuse of the technology. This research will address these concerns by adhering to the highest ethical standards and by following the guidance of organizations such as the IEEE and NIST~\cite{webasha2024ethics}. A key focus of the research will be on developing AI models that are not only effective but also fair, transparent, and accountable.
+
+An AI governance framework will be developed to ensure that the AI models are used in a responsible and ethical manner. This framework will include policies and procedures for data privacy, model transparency, and human oversight. The framework will be based on the principles of responsible AI, and it will be designed to be compliant with all relevant laws and regulations~\cite{researchgate2024aigovernance}.
 
 \section{AI Model Development Pipeline}\label{sec:method-aidev}
 \subsection{Data Preprocessing}
@@ -238,6 +250,14 @@ Production deployment pipeline:
 
 Continuous integration (GitHub Actions) automates testing and deployment.
 
+The use of open-source cloud testbeds, such as the one developed at the University of Messina, is a key component of the experimental setup. These testbeds provide a flexible and reproducible environment for conducting a wide range of security experiments~\cite{unime2024testbeds}. The testbed is based on Docker and Kubernetes, and it allows for the definition of complex network topologies and attack scenarios.
+
+The "build-it, break-it, fix-it" (BIBIFI) approach is another important aspect of the experimental setup. This approach involves building a system, trying to break it, and then fixing the vulnerabilities that are found. This iterative process is a powerful way to identify and address security weaknesses in a system~\cite{youtube2024bibifi}.
+
+Feature engineering is a critical step in the AI model development pipeline. This involves creating new features from the raw telemetry data that can help to improve the accuracy of the detection models. For example, features such as the ratio of inbound to outbound traffic, the number of failed login attempts, and the frequency of API calls can all be used to identify suspicious activity~\cite{medium2024feature}.
+
+The use of ensemble methods is another important technique for improving the accuracy of intrusion detection systems. Ensemble methods combine the predictions of multiple models to produce a single, more accurate prediction. This can help to reduce the number of false positives and to improve the overall robustness of the system~\cite{mdpi2024ensemble}.
+
 \section{Multi-Telemetry Correlation Engine}\label{sec:method-correlation}
 \subsection{Complex Event Processing}
 CEP engine ingests normalized telemetry and applies temporal pattern rules:
@@ -285,6 +305,10 @@ Telemetry normalized to schema:
 \end{verbatim}
 
 Transformation logic implemented as Apache Beam pipelines for portability across runners (Flink, Spark, Dataflow).
+
+The use of a unified platform that combines SIEM, SOAR, UEBA, and CNAP capabilities is a key trend in modern security operations. This approach allows for the correlation of data from a wide range of sources, and for the automation of response actions~\cite{securityboulevard2024unified}. This research will explore the use of a unified platform to provide a more holistic and effective approach to cloud security.
+
+Real-time contextual enrichment is another critical component of a modern multi-telemetry correlation engine. This involves enriching the raw telemetry data with additional context, such as user behavior profiles, threat intelligence, and asset information. This additional context can significantly improve the accuracy of detection models and reduce the number of false positives~\cite{msspalert2024enrichment}. The ability to perform this enrichment in real-time, as the data is being processed, is a key advantage of stream processing frameworks.
 
 \section{Experimental Setup}\label{sec:method-experimental}
 \subsection{Infrastructure}
@@ -359,6 +383,10 @@ Transformation logic implemented as Apache Beam pipelines for portability across
 
 \textbf{Think-Aloud Analysis:} Transcripts coded for themes: explanation comprehension, decision confidence, information overload, workflow integration. Two independent coders; inter-rater reliability measured via Cohen's kappa.
 
+Adversarial testing, also known as red teaming, is a key component of the validation strategy. This involves proactively testing the AI models against a variety of evasion, poisoning, and extraction attacks to identify weaknesses~\cite{robustintelligence2024redteaming}. The results of these tests will be used to improve the robustness and resilience of the models.
+
+Threat modeling is another important aspect of the validation strategy. This involves identifying potential attack vectors specific to the AI systems and designing defenses to mitigate them. This research will use a threat modeling framework to systematically identify and address potential security risks in the AI models and the surrounding infrastructure~\cite{mindgard2024threatmodeling}.
+
 \section{Reliability, Validity, and Limitations}\label{sec:method-reliability}
 \subsection{Reliability}
 \textbf{Internal Consistency:} Automated pipelines ensure reproducible preprocessing and training. Version control (Git) tracks code changes. Docker containers freeze dependencies.
@@ -379,6 +407,10 @@ Transformation logic implemented as Apache Beam pipelines for portability across
     \item \textbf{Temporal Scope:} 90-day telemetry collection may miss seasonal patterns or long-term trends.
     \item \textbf{Computational Costs:} Large-scale graph processing and ensemble inference require substantial resources, potentially limiting adoption in resource-constrained environments.
 \end{itemize}
+
+This research will also employ data lineage documentation to map every data source from collection to model input. This will help to ensure the reliability and validity of the data used in the research~\cite{luthor2024lineage}.
+
+Continuous monitoring and maintenance of the AI models is another key aspect of the validation strategy. This will involve tracking key performance metrics over time and periodically revalidating the models to ensure that they are still performing as expected~\cite{medium2024monitoring}.
 
 \section{Summary}
 This chapter detailed a rigorous, multi-faceted methodology combining design science, empirical experimentation, and qualitative analysis. The approach ensures that findings are reproducible, valid, and operationally relevant. Chapter~\ref{chap:arch} applies this methodology to system implementation; Chapter~\ref{chap:eval} reports evaluation results.

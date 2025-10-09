@@ -12,6 +12,13 @@ Advances in artificial intelligence (AI) and machine learning (ML) offer promisi
 
 The convergence of heterogeneous telemetry, escalating threat sophistication, and stringent regulatory mandates creates an urgent need for novel detection frameworks. Such systems must ingest and correlate multi-modal data streams in real time, accurately identify complex attack behaviors spanning multiple infrastructure layers, provide explainable insights to human analysts, automate response actions while preserving accountability, and demonstrate compliance with national and international cybersecurity policies. This thesis addresses these imperatives through the design, implementation, and evaluation of an AI-driven multi-telemetry framework tailored to cloud environments.
 
+The enterprise migration to the cloud has evolved from a tentative adoption of single-provider solutions to a strategic embrace of multi-cloud and hybrid architectures. As of 2025, an overwhelming 89% of enterprises report having a multi-cloud strategy, driven by a desire to prevent vendor lock-in, enhance service resilience, and access best-of-breed services from different providers~\cite{flexera2025multicloud}. This trend, however, introduces a significant layer of complexity to the security paradigm. Each cloud service provider (CSP) has its own unique set of security controls, APIs, and monitoring tools, creating a fragmented and inconsistent security posture. Managing identities, access policies, and data protection across these disparate environments becomes a monumental challenge, with misconfigurations remaining the leading cause of cloud security failures~\cite{paloalto2024cloudreport}. The lack of a unified security plane across multi-cloud deployments creates visibility gaps that sophisticated adversaries are quick to exploit.
+
+Compounding the architectural complexity is the concurrent rise of AI-driven cyber threats. Generative AI, once a novel technology, is now being weaponized at scale, with 47% of organizations citing AI-generated phishing and social engineering as a primary concern in 2024~\cite{checkpoint2024aireport}. These advanced threats are more sophisticated, personalized, and harder to detect than their predecessors. Furthermore, the proliferation of Ransomware-as-a-Service (RaaS) models has democratized access to advanced attack tools, leading to a 95% increase in ransomware attacks on cloud environments in 2024 alone~\cite{crowdstrike2024threatreport}. Traditional signature-based and rule-based detection systems are ill-equipped to counter these dynamic and polymorphic threats, highlighting the urgent need for a new generation of AI-powered defense mechanisms that can learn and adapt in real-time.
+
+A more recent trend shaping cloud strategy is the growing importance of FinOps—the practice of bringing financial accountability to the variable spend model of the cloud. With cloud cost mismanagement estimated to waste approximately 30% of cloud spending annually, organizations are increasingly focused on optimizing their cloud resource utilization~\cite{finopsfoundation2024report}. This has a direct and often overlooked impact on security. Security teams are now under pressure to not only secure the cloud environment but also to do so in a cost-effective manner. This has led to the emergence of "SecFinOps," a discipline that seeks to balance security and cost. However, this can lead to trade-offs where security controls are weakened or disabled to reduce costs, creating new vulnerabilities. An effective cloud security framework must therefore be not only technologically advanced but also economically viable, providing robust security without generating prohibitive costs.
+
+
 \section{Problem Statement}\label{sec:intro-problem}
 Despite the proliferation of security monitoring tools, contemporary cloud environments suffer from fragmented visibility and inadequate correlation capabilities. Existing solutions exhibit several critical deficiencies that motivate this research:
 
@@ -26,6 +33,13 @@ Despite the proliferation of security monitoring tools, contemporary cloud envir
 \textbf{Operational Integration and Analyst Workflows:} Security operations centers (SOCs) employ diverse tools for ticketing, case management, threat intelligence, and incident response orchestration. Detection systems that generate isolated alerts without contextual enrichment or automated response playbooks impose excessive cognitive load on analysts. Research prototypes often demonstrate technical feasibility in controlled laboratory environments but fail to address the socio-technical challenges of integrating AI-driven detection into operational workflows, training analysts to interpret XAI outputs, and establishing feedback loops for continuous model improvement.
 
 Given these deficiencies, the core research problem is: \emph{How can we design, implement, and validate an AI-driven framework that fuses heterogeneous cloud telemetry to detect and explain multi-stage cyber attacks in real time, while satisfying regulatory obligations and integrating seamlessly into operational security workflows?} Addressing this problem requires innovations spanning data engineering, machine learning, systems architecture, regulatory mapping, and human-computer interaction.
+
+A significant contributor to the telemetry fragmentation problem is the distributed and complex nature of Identity and Access Management (IAM) in multi-cloud and hybrid environments. As of 2024, managing user identities and access across a heterogeneous mix of cloud services remains a top security challenge~\cite{fortinet2024cloudreport}. Each platform has its own IAM model, leading to a proliferation of roles, permissions, and credentials that are difficult to manage and audit. This often results in overly permissive access, where users and services are granted more privileges than they require, creating a large attack surface. According to the Orca Security 2024 State of Cloud Security Report, neglected public-facing assets and root users lacking multi-factor authentication (MFA) are still prevalent, providing easy entry points for attackers~\cite{orca2024cloudreport}. The lack of a centralized IAM control plane makes it difficult to enforce consistent policies and detect privilege escalation and lateral movement across cloud boundaries.
+
+The increasing reliance on APIs for cloud-native applications has introduced a new and critical attack vector. Insecure interfaces and APIs are now a primary target for attackers seeking to gain unauthorized access to data and services~\cite{isaca2024cloudthreats}. The problem is exacerbated by the sheer volume and complexity of APIs in a modern cloud environment, which often lack consistent security controls. Common vulnerabilities include weak authentication, insufficient input validation, and a lack of rate limiting, which can be exploited for data exfiltration, denial-of-service attacks, and other malicious activities. The lack of comprehensive API security monitoring and the difficulty in distinguishing between legitimate and malicious API traffic further complicate the detection of these attacks.
+
+While AI is a promising tool for defense, it has also become a powerful weapon for attackers. The advent of sophisticated AI-driven threats, including AI-powered reconnaissance and automated social engineering, is a growing concern for organizations~\cite{checkpoint2024aireport}. These AI-generated attacks are more targeted, evasive, and scalable than ever before, often bypassing traditional security controls. This creates a "double-edged sword" scenario where security teams must not only leverage AI to defend their cloud environments but also defend against AI-powered attacks. This necessitates a new generation of AI-driven security solutions that can detect and respond to these advanced threats in real-time, while also being resilient to adversarial AI techniques.
+
 
 \section{Research Objectives}\label{sec:intro-objectives}
 This dissertation pursues four primary objectives, each decomposed into specific research deliverables:
@@ -71,6 +85,13 @@ This dissertation pursues four primary objectives, each decomposed into specific
 
 These objectives collectively address the research problem through a comprehensive design science approach that balances theoretical rigor, technical innovation, and operational pragmatism.
 
+A primary objective of this research is to move beyond reactive threat detection and towards a proactive, predictive security posture. This involves developing AI models capable of anticipating security incidents before they materialize by learning the subtle precursors to an attack~\cite{viderity2024proactive}. A key deliverable is an AI-driven predictive analytics engine that can identify high-risk configurations and anomalous user behaviors that are often leading indicators of a compromise. Furthermore, the framework must be resilient to adversarial attacks targeting the AI models themselves. This research will investigate and implement strategies to defend against data poisoning, model evasion, and other adversarial machine learning techniques, ensuring the long-term robustness and reliability of the detection framework in a real-world setting~\cite{sada2024adversarial}.
+
+For any AI-driven security framework to be effective, it must be trusted and understood by the security analysts who use it. Therefore, a core objective of this research is to enhance the explainability of the AI models (XAI) to a level that is actionable for Security Operations Center (SOC) analysts~\cite{kpmg2024xai}. This goes beyond simply identifying threats; the framework must provide clear, concise, and human-interpretable explanations for its decisions. This includes generating attack narratives that trace the sequence of events in a multi-stage attack, visualizing the evidence that led to a detection, and providing counterfactual explanations that help analysts understand why a particular event was flagged as malicious. The success of this objective will be measured not only by the technical accuracy of the explanations but also by their impact on analyst trust, decision-making speed, and overall operational efficiency.
+
+Looking towards the future of cloud security, this research also aims to explore the integration of emerging technologies to "future-proof" the framework. A specific objective is to investigate the use of quantum-resistant cryptography (QRC) for securing the framework's data and communications, in anticipation of the threat that quantum computing poses to current encryption standards~\cite{osf2024quantum}. Additionally, this research will explore the application of federated learning to enable collaborative threat detection across different organizations and cloud environments without sharing sensitive raw data~\cite{researchgate2024federated}. This would allow the framework to learn from a much larger and more diverse dataset, improving its ability to detect new and emerging threats while preserving data privacy and confidentiality.
+
+
 \section{Research Questions and Hypotheses}\label{sec:intro-rq}
 This research is guided by four overarching questions, each accompanied by testable hypotheses:
 
@@ -101,6 +122,13 @@ This research is guided by four overarching questions, each accompanied by testa
 
 \textbf{Hypothesis H4:} A policy-as-code compliance framework integrating CERT-In incident reporting timelines, GDPR data retention and breach notification requirements, NIS2 security measures, and FedRAMP continuous monitoring controls can be implemented with $\leq$5\% performance overhead relative to the baseline detection pipeline. Automated compliance validation will achieve $\geq$95\% accuracy in identifying policy violations, and audit trail generation will satisfy forensic analysis requirements with complete event provenance.
 
+A key research question is how AI can be leveraged to move from a reactive to a proactive threat hunting posture in the cloud. This involves investigating how AI-driven anomaly detection systems can be trained to identify not just known threats, but also novel and sophisticated attack patterns, such as zero-day exploits and polymorphic malware~\cite{ai_threat_hunting_2024}. A central hypothesis is that AI-powered predictive analytics can be used to anticipate potential security vulnerabilities and attack vectors in dynamic cloud infrastructures, thereby enabling proactive defense mechanisms. This research will explore the effectiveness of different AI/ML algorithms in identifying subtle indicators of compromise and how they can be integrated into a proactive threat hunting framework.
+
+Another critical research question is how to make AI-driven security decisions explainable and trustworthy to human analysts. This is particularly important in the context of incident response, where analysts need to quickly understand why an alert was triggered and what actions to take. This research will investigate the challenges in developing explainable AI (XAI) models for cloud security applications and how XAI can improve trust and adoption among security analysts~\cite{xai_cloud_security_2024}. A key hypothesis is that by providing clear and concise explanations for its decisions, an AI-driven security framework can significantly reduce the mean time to respond (MTTR) to security incidents and improve the overall effectiveness of the security operations center (SOC).
+
+A final, and crucial, research question is how to secure the AI models themselves. As AI becomes more integrated into cloud security, the AI models themselves become a target for attackers. This research will investigate the vulnerability of AI-driven cloud security systems to adversarial attacks, such as data poisoning and evasion attacks, and what mitigation strategies can be employed to enhance their robustness~\cite{adversarial_ai_2024}. A central hypothesis is that by incorporating adversarial training and other defense mechanisms into the AI model development lifecycle, it is possible to build AI-driven security systems that are resilient to these types of attacks.
+
+
 \section{Scope and Delimitations}\label{sec:intro-scope}
 \textbf{In Scope:}
 \begin{itemize}
@@ -122,6 +150,10 @@ This research is guided by four overarching questions, each accompanied by testa
 \end{itemize}
 
 \textbf{Ethical Considerations:} Human subject research is limited to analyst usability studies conducted under institutional ethics committee approval. All telemetry data is pseudonymized or synthetic; no personally identifiable information (PII) is processed without explicit consent and data protection safeguards.
+
+This research will specifically focus on the application of Graph Neural Networks (GNNs) and Transformer-based models for telemetry analysis, due to their proven effectiveness in capturing complex relationships and sequential data patterns. While other models like reinforcement learning for autonomous response are acknowledged, they are considered out of scope to maintain a clear focus on detection and explanation.
+
+The scope of compliance is primarily centered on the technical implementation of logging, data retention, and breach notification requirements as defined by CERT-In, GDPR, and NIS2. The legal and political interpretation of these regulations is outside the scope of this thesis.
 
 \section{Significance and Contributions}\label{sec:intro-significance}
 This research delivers theoretical, methodological, and practical contributions across multiple stakeholder communities:
@@ -152,6 +184,10 @@ This research delivers theoretical, methodological, and practical contributions 
 
 \textbf{Societal Impact:}
 Strengthened cloud security protections reduce organizational exposure to data breaches, ransomware, and supply chain attacks. Enhanced detection capabilities support critical infrastructure resilience, economic stability, and public trust in digital services. Promotion of explainable AI practices ensures human oversight and accountability in high-stakes security decisions.
+
+A significant contribution of this work is the development of a "Security as Code" paradigm for threat detection. By codifying detection logic, compliance checks, and response actions, the framework enables a more agile and automated approach to security operations, reducing the reliance on manual processes and improving the consistency and repeatability of security outcomes~\cite{security_as_code_2024}.
+
+This research will also produce a new, publicly available benchmark dataset for multi-telemetry cloud security analysis. This dataset, which will include a diverse range of normal and malicious activities, will be a valuable resource for the research community, enabling more rigorous and comparative evaluations of future detection models.
 
 \section{Research Dissemination Plan}\label{sec:intro-dissemination}
 The research outcomes will be disseminated through multiple channels to maximize academic impact, industry adoption, and policy influence:
@@ -189,6 +225,10 @@ The research outcomes will be disseminated through multiple channels to maximize
     \item Exploration of licensing opportunities with cloud service providers, security vendors, and government agencies.
     \item Potential startup formation or industry partnerships for commercial deployment, subject to institutional policies.
 \end{itemize}
+
+In addition to traditional academic publications, a key part of the dissemination plan is to engage with the open-source community. The core framework will be released as an open-source project, and we will actively seek to build a community of contributors and users. This will help to ensure the long-term sustainability and impact of the research.
+
+We will also target specific workshops and tutorials at industry-leading conferences, such as the AISec workshop at ACM CCS, to share our findings with a broader audience of security practitioners and researchers~\cite{aisec_workshop_2023}.
 
 \section{Thesis Organization}\label{sec:intro-organization}
 The remainder of this thesis is structured as follows:
@@ -242,3 +282,7 @@ The remainder of this thesis is structured as follows:
 \end{itemize}
 
 \textbf{Conflict of Interest:} No financial conflicts of interest exist. Industry collaborations are disclosed in acknowledgements and governed by institutional policies on sponsored research.
+
+The ethical implications of collecting and analyzing large volumes of telemetry data are a central concern of this research. We will develop and adhere to a strict data governance plan that includes data minimization, anonymization, and purpose limitation, ensuring that the privacy of individuals is protected at all times.
+
+A critical ethical consideration is the potential for bias in the AI models. This research will include a thorough analysis of the fairness and bias of the detection models, and we will develop and implement mitigation strategies to ensure that the models do not disproportionately impact any particular group of users~\cite{fairness_in_ai_2024}.
