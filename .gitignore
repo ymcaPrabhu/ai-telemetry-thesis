@@ -1,27 +1,3 @@
-# LaTeX build artifacts
-*.aux
-*.bbl
-*.blg
-*.log
-*.toc
-*.lof
-*.lot
-*.out
-*.synctex.gz
-*.fdb_latexmk
-*.fls
-*.gz
-*.nav
-*.snm
-*.vrb
-*.pdf
-*.dvi
-*.ps
-_build/
-
-# OS / editor
-.DS_Store
-Thumbs.db
-*.swp
-.idea/
-.vscode/
+node_modules
+.env
+npm-debug.log

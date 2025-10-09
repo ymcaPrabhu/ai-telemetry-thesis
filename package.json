@@ -1,0 +1,28 @@
+{
+  "name": "ai-telemetry-thesis",
+  "version": "1.0.0",
+  "description": "Research workspace initialized on demand. Populate this directory with project documentation, datasets, and analyses as the scope evolves.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ymcaPrabhu/ai-telemetry-thesis.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ymcaPrabhu/ai-telemetry-thesis/issues"
+  },
+  "homepage": "https://github.com/ymcaPrabhu/ai-telemetry-thesis#readme",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "sqlite": "^5.1.1"
+  }
+}
